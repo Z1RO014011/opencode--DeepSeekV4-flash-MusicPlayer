@@ -4,7 +4,7 @@
   "version": "1.0.0",
   "type": "module",
   "description": "Jasmine Music Player - Spotify-style music player built with React",
-  "author": "Z1RO014011",
+  "author": "Z1RO014011 <zhr014011@outlook.com>",
   "main": "electron/main.cjs",
   "scripts": {
     "dev": "vite",
@@ -12,10 +12,11 @@
     "preview": "vite preview",
     "deploy": "npm run build && gh-pages -d dist",
     "electron:dev": "concurrently -k \"vite\" \"wait-on http://localhost:5173 && electron .\"",
-    "electron:build": "ELECTRON=true vite build && electron-builder"
+    "electron:build": "ELECTRON=true vite build && electron-builder",
+    "electron:build:all": "ELECTRON=true vite build && electron-builder --mac --win --linux"
   },
   "build": {
-    "appId": "com.musicplayer.app",
+    "appId": "com.jasmine.musicplayer",
     "productName": "Jasmine Music Player",
     "directories": {
       "output": "release"
@@ -25,10 +26,14 @@
       "electron/**/*"
     ],
     "mac": {
-      "target": "dmg"
+      "target": ["dmg", "zip"]
+    },
+    "linux": {
+      "target": ["AppImage", "deb"],
+      "maintainer": "Z1RO014011"
     },
     "win": {
-      "target": "nsis"
+      "target": "portable"
     }
   },
   "dependencies": {

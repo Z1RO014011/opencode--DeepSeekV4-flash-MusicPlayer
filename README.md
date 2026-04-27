@@ -1,6 +1,6 @@
-# 🎵 Music Player
+# 🎵 Jasmine Music Player
 
-Spotify 风格的全功能 Web 音乐播放器，基于 **Vite + React 18 + TypeScript** 构建。
+Spotify 风格的全功能 Web 音乐播放器，基于 **Vite + React 18 + TypeScript + Electron** 构建。
 
 ## ✨ 功能
 
@@ -22,15 +22,27 @@ npm run dev
 
 浏览器打开 `http://localhost:5173/music-player/`。
 
-### 🖥️ 桌面应用（Electron）
+### 🖥️ 桌面应用（下载安装包）
 
-像原生 app 一样在桌面独立运行：
+无需安装 Node.js，直接下载对应系统的安装包运行：
+
+| 系统 | 下载 | 说明 |
+|------|------|------|
+| macOS (Apple Silicon) | [Jasmine Music Player-1.0.0-arm64.dmg](https://github.com/Z1RO014011/opencode--DeepSeekV4-flash-MusicPlayer/releases/latest) | DMG 安装包 |
+| macOS (Apple Silicon) | [Jasmine Music Player-1.0.0-arm64-mac.zip](https://github.com/Z1RO014011/opencode--DeepSeekV4-flash-MusicPlayer/releases/latest) | ZIP 便携版 |
+| Windows (ARM64) | [Jasmine Music Player 1.0.0.exe](https://github.com/Z1RO014011/opencode--DeepSeekV4-flash-MusicPlayer/releases/latest) | 单文件便携版 |
+| Linux (ARM64) | [Jasmine Music Player-1.0.0-arm64.AppImage](https://github.com/Z1RO014011/opencode--DeepSeekV4-flash-MusicPlayer/releases/latest) | AppImage 免安装 |
+
+> 下载后直接打开即可使用，首次打开 macOS 需在 **系统设置 → 隐私与安全性** 中点"仍要打开"。
+
+### 🛠️ 开发者模式（从源码运行）
 
 ```bash
+npm install
 npm run electron:dev
 ```
 
-或构建安装包（生成 `.dmg` / `.exe`）：
+或构建安装包：
 
 ```bash
 npm run electron:build
