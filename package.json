@@ -1,9 +1,9 @@
 {
-  "name": "music-player",
+  "name": "jasmine-music-player",
   "private": true,
   "version": "1.0.0",
   "type": "module",
-  "description": "Spotify-style music player built with React",
+  "description": "Jasmine Music Player - Spotify-style music player built with React",
   "author": "Z1RO014011",
   "main": "electron/main.cjs",
   "scripts": {
@@ -16,7 +16,7 @@
   },
   "build": {
     "appId": "com.musicplayer.app",
-    "productName": "Music Player",
+    "productName": "Jasmine Music Player",
     "directories": {
       "output": "release"
     },
