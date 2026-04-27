@@ -11,6 +11,7 @@ export function HomeView({ onSelectPlaylist }: HomeViewProps) {
 
   const hasContent = userSongs.length > 0 || userPlaylists.length > 0;
   const recentSongs = userSongs.slice(-8).reverse();
+  const recentSongsList = [...recentSongs].reverse();
 
   return (
     <div className="home-view">
@@ -58,7 +59,7 @@ export function HomeView({ onSelectPlaylist }: HomeViewProps) {
               <div className="track-list">
                 <div className="track-list-body">
                   {recentSongs.map((song, idx) => (
-                    <div key={song.id} className="track-row" onClick={() => playSong(song)}>
+                    <div key={song.id} className="track-row" onClick={() => playSong(song, userSongs)}>
                       <span className="track-col-num">{idx + 1}</span>
                       <span className="track-col-title">
                         <div className="track-cover-mini" style={{ background: song.coverColor }} />

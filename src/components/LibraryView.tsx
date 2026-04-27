@@ -90,8 +90,8 @@ export function LibraryView({ onSelectPlaylist }: LibraryViewProps) {
                 <span className="track-col-action">操作</span>
               </div>
               <div className="track-list-body">
-                {userSongs.map((song, idx) => (
-                  <div key={song.id} className="track-row" onClick={() => playSong(song)}>
+                  {userSongs.map((song, idx) => (
+                    <div key={song.id} className="track-row" onClick={() => playSong(song, userSongs)}>
                     <span className="track-col-num">{idx + 1}</span>
                     <span className="track-col-title">
                       <div className="track-cover-mini" style={{ background: song.coverColor }} />

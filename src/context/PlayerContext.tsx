@@ -120,7 +120,7 @@ interface PlayerContextType {
   state: PlayerState;
   dispatch: React.Dispatch<PlayerAction>;
   playPlaylist: (playlist: Playlist, startIndex?: number) => void;
-  playSong: (song: Song) => void;
+  playSong: (song: Song, context?: Song[]) => void;
   togglePlay: () => void;
   nextTrack: () => void;
   prevTrack: () => void;
@@ -301,8 +301,14 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
     }
   }, []);
 
-  const playSong = useCallback((song: Song) => {
-    dispatch({ type: 'PLAY_SONG', song });
+  const playSong = useCallback((song: Song, context?: Song[]) => {
+    if (context && context.length > 0) {
+      const index = context.findIndex(s => s.id === song.id);
+      dispatch({ type: 'SET_QUEUE', songs: context, index: index >= 0 ? index : 0 });
+      dispatch({ type: 'PLAY_SONG', song });
+    } else {
+      dispatch({ type: 'PLAY_SONG', song });
+    }
     initAudio(song);
   }, []);
 
