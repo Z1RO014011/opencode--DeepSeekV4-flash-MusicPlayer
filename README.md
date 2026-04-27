@@ -22,6 +22,22 @@ npm run dev
 
 浏览器打开 `http://localhost:5173/music-player/`。
 
+### 🖥️ 桌面应用（Electron）
+
+像原生 app 一样在桌面独立运行：
+
+```bash
+npm run electron:dev
+```
+
+或构建安装包（生成 `.dmg` / `.exe`）：
+
+```bash
+npm run electron:build
+```
+
+构建产物在 `release/` 目录。
+
 ## 🛠️ 技术栈
 
 | 技术 | 用途 |
