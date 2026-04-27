@@ -744,8 +744,16 @@
 .player-current-song {
   display: flex;
   align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+
+.player-current-song-clickable {
+  display: flex;
+  align-items: center;
   gap: 12px;
   min-width: 0;
+  cursor: pointer;
 }
 
 .player-cover {
@@ -1537,6 +1545,12 @@
   min-width: 0;
 }
 
+.nowplaying-view-title-row {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
 .nowplaying-view-title {
   font-size: 36px;
   font-weight: 800;
@@ -1837,4 +1851,31 @@
   .track-col-artist {
     display: none;
   }
+}
+
+/* ============ LIKE BUTTON ============ */
+.like-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: none;
+  cursor: pointer;
+  transition: transform 0.15s, opacity 0.15s;
+  opacity: 0.6;
+  padding: 0;
+}
+
+.like-btn:hover {
+  opacity: 1;
+  transform: scale(1.1);
+}
+
+.like-btn.liked {
+  opacity: 1;
+  color: var(--accent);
+}
+
+.player-like-btn {
+  flex-shrink: 0;
 }

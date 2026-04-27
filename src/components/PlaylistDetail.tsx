@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Playlist, Song } from '../types';
-import { usePlayer } from '../context/PlayerContext';
+import { usePlayer, LIKED_PLAYLIST_ID } from '../context/PlayerContext';
 
 interface PlaylistDetailProps {
   playlist: Playlist;
@@ -9,6 +9,7 @@ interface PlaylistDetailProps {
 
 export function PlaylistDetail({ playlist, onBack }: PlaylistDetailProps) {
   const { playPlaylist, playSong, removeSongFromPlaylist, deletePlaylist, renamePlaylist, userSongs, addSongsToPlaylist } = usePlayer();
+  const isLikedPlaylist = playlist.id === LIKED_PLAYLIST_ID;
   const [isEditing, setIsEditing] = useState(false);
   const [editName, setEditName] = useState(playlist.name);
   const [showAddSongs, setShowAddSongs] = useState(false);
@@ -49,7 +50,7 @@ export function PlaylistDetail({ playlist, onBack }: PlaylistDetailProps) {
         </button>
         <div className="playlist-detail-info">
           <span className="playlist-detail-label">歌单</span>
-          {isEditing ? (
+          {isEditing && !isLikedPlaylist ? (
             <div className="playlist-rename">
               <input
                 type="text"
@@ -62,7 +63,7 @@ export function PlaylistDetail({ playlist, onBack }: PlaylistDetailProps) {
               <button onClick={() => setIsEditing(false)}>取消</button>
             </div>
           ) : (
-            <h1 className="playlist-detail-title" onClick={() => { setEditName(playlist.name); setIsEditing(true); }}>
+            <h1 className="playlist-detail-title" onClick={() => { if (!isLikedPlaylist) { setEditName(playlist.name); setIsEditing(true); } }}>
               {playlist.name}
             </h1>
           )}
@@ -88,12 +89,14 @@ export function PlaylistDetail({ playlist, onBack }: PlaylistDetailProps) {
             添加歌曲
           </button>
         )}
-        <button className="playlist-action-btn danger" onClick={handleDelete}>
-          <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
-            <path d="M3 6h18v2H3V6zm2 2h14l-1 13H6L5 8zm4-4h6l1-1H8l1 1z"/>
-          </svg>
-          删除歌单
-        </button>
+        {!isLikedPlaylist && (
+          <button className="playlist-action-btn danger" onClick={handleDelete}>
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
+              <path d="M3 6h18v2H3V6zm2 2h14l-1 13H6L5 8zm4-4h6l1-1H8l1 1z"/>
+            </svg>
+            删除歌单
+          </button>
+        )}
       </div>
 
       {showAddSongs && availableSongs.length > 0 && (

@@ -6,7 +6,7 @@ interface PlayerBarProps {
 }
 
 export function PlayerBar({ onOpenNowPlaying }: PlayerBarProps) {
-  const { state, dispatch, togglePlay, nextTrack, prevTrack, audioRef } = usePlayer();
+  const { state, dispatch, togglePlay, nextTrack, prevTrack, audioRef, isLiked, toggleLike } = usePlayer();
   const { currentSong, isPlaying, currentTime, duration, volume, isShuffled, repeatMode } = state;
   const progressRef = useRef<HTMLDivElement>(null);
   const volumeRef = useRef<HTMLDivElement>(null);
@@ -46,12 +46,23 @@ export function PlayerBar({ onOpenNowPlaying }: PlayerBarProps) {
     <footer className="player-bar">
       <div className="player-left">
         {currentSong ? (
-          <div className="player-current-song clickable" onClick={onOpenNowPlaying}>
-            <div className="player-cover" style={{ background: currentSong.coverColor }} />
-            <div className="player-song-info">
-              <div className="player-song-title">{currentSong.title}</div>
-              <div className="player-song-artist">{currentSong.artist}</div>
+          <div className="player-current-song">
+            <div className="player-current-song-clickable" onClick={onOpenNowPlaying}>
+              <div className="player-cover" style={{ background: currentSong.coverColor }} />
+              <div className="player-song-info">
+                <div className="player-song-title">{currentSong.title}</div>
+                <div className="player-song-artist">{currentSong.artist}</div>
+              </div>
             </div>
+            <button
+              className={`like-btn player-like-btn ${isLiked(currentSong.id) ? 'liked' : ''}`}
+              onClick={() => toggleLike(currentSong)}
+              title={isLiked(currentSong.id) ? '取消喜欢' : '喜欢'}
+            >
+              <svg viewBox="0 0 24 24" width="16" height="16" fill={isLiked(currentSong.id) ? 'currentColor' : 'none'} stroke="currentColor" strokeWidth="2">
+                <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+              </svg>
+            </button>
           </div>
         ) : (
           <div className="player-current-song">

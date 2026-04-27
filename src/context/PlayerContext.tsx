@@ -114,6 +114,8 @@ function nextColor(): string {
   return c;
 }
 
+export const LIKED_PLAYLIST_ID = '__liked__';
+
 interface PlayerContextType {
   state: PlayerState;
   dispatch: React.Dispatch<PlayerAction>;
@@ -133,6 +135,10 @@ interface PlayerContextType {
   renamePlaylist: (playlistId: string, name: string) => void;
   addSongsToPlaylist: (playlistId: string, songs: Song[]) => void;
   removeSongFromPlaylist: (playlistId: string, songId: string) => void;
+
+  likedPlaylist: Playlist | undefined;
+  isLiked: (songId: string) => boolean;
+  toggleLike: (song: Song) => void;
 }
 
 const PlayerContext = createContext<PlayerContextType | null>(null);
@@ -176,16 +182,30 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
       }
 
       // Load playlists
+      let pls: Playlist[] = [];
       if (playlistData) {
-        const pls: Playlist[] = playlistData.raw.map((pl: any) => ({
+        pls = playlistData.raw.map((pl: any) => ({
           ...pl,
           songs: (pl.songs || [])
             .map((sid: string) => restoredPlaylistSongs.get(sid))
             .filter(Boolean),
         }));
-        setUserPlaylists(pls);
       }
 
+      // Ensure "我喜欢的音乐" playlist exists
+      const likedExists = pls.some(pl => pl.id === LIKED_PLAYLIST_ID);
+      if (!likedExists) {
+        pls.unshift({
+          id: LIKED_PLAYLIST_ID,
+          name: '我喜欢的音乐',
+          description: '收藏你喜欢的歌曲',
+          coverColor: 'linear-gradient(135deg, #e23b3b 0%, #ff6b6b 100%)',
+          songs: [],
+          createdAt: 0,
+        });
+      }
+
+      setUserPlaylists(pls);
       setUserSongs(songs);
       setLoaded(true);
     })();
@@ -414,6 +434,7 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   const deletePlaylist = useCallback((playlistId: string) => {
+    if (playlistId === LIKED_PLAYLIST_ID) return;
     setUserPlaylists(prev => prev.filter(pl => pl.id !== playlistId));
   }, []);
 
@@ -443,12 +464,34 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
     );
   }, []);
 
+  const likedPlaylist = userPlaylists.find(pl => pl.id === LIKED_PLAYLIST_ID);
+
+  const isLiked = useCallback((songId: string) => {
+    return likedPlaylist?.songs.some(s => s.id === songId) ?? false;
+  }, [likedPlaylist]);
+
+  const toggleLike = useCallback((song: Song) => {
+    setUserPlaylists(prev =>
+      prev.map(pl => {
+        if (pl.id !== LIKED_PLAYLIST_ID) return pl;
+        const exists = pl.songs.some(s => s.id === song.id);
+        return {
+          ...pl,
+          songs: exists
+            ? pl.songs.filter(s => s.id !== song.id)
+            : [...pl.songs, song],
+        };
+      })
+    );
+  }, []);
+
   return (
     <PlayerContext.Provider value={{
       state, dispatch, playPlaylist, playSong, togglePlay, nextTrack, prevTrack, audioRef,
       userSongs, userPlaylists,
       importFiles, deleteSong, createPlaylist, deletePlaylist,
       renamePlaylist, addSongsToPlaylist, removeSongFromPlaylist,
+      likedPlaylist, isLiked, toggleLike,
     }}>
       {children}
     </PlayerContext.Provider>
