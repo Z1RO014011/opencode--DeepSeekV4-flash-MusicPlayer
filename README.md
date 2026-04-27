@@ -20,7 +20,7 @@ npm install
 npm run dev
 ```
 
-浏览器打开 `http://localhost:5173`。
+浏览器打开 `http://localhost:5173/music-player/`。
 
 ## 🛠️ 技术栈
 
