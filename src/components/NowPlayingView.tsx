@@ -15,6 +15,7 @@ export function NowPlayingView({ onBack }: NowPlayingViewProps) {
   const [showLyrics, setShowLyrics] = useState(() => (currentSong?.lyrics?.length ?? 0) > 0);
   const [editingLyrics, setEditingLyrics] = useState(false);
   const [lrcInput, setLrcInput] = useState('');
+  const [draggingVolume, setDraggingVolume] = useState(false);
 
   useEffect(() => {
     setShowLyrics((currentSong?.lyrics?.length ?? 0) > 0);
@@ -46,6 +47,33 @@ export function NowPlayingView({ onBack }: NowPlayingViewProps) {
     dispatch({ type: 'SET_VOLUME', volume: pct });
   }, [dispatch]);
 
+  useEffect(() => {
+    if (!draggingVolume) return;
+    const handleMove = (e: MouseEvent) => {
+      const el = volumeRef.current;
+      if (!el) return;
+      const rect = el.getBoundingClientRect();
+      const pct = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
+      dispatch({ type: 'SET_VOLUME', volume: pct });
+    };
+    const handleUp = () => setDraggingVolume(false);
+    document.addEventListener('mousemove', handleMove);
+    document.addEventListener('mouseup', handleUp);
+    return () => {
+      document.removeEventListener('mousemove', handleMove);
+      document.removeEventListener('mouseup', handleUp);
+    };
+  }, [draggingVolume, dispatch]);
+
+  const handleVolumeDown = useCallback((e: React.MouseEvent) => {
+    const el = volumeRef.current;
+    if (!el) return;
+    const rect = el.getBoundingClientRect();
+    const pct = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
+    dispatch({ type: 'SET_VOLUME', volume: pct });
+    setDraggingVolume(true);
+  }, [dispatch]);
+
   const progressPct = duration > 0 ? (currentTime / duration) * 100 : 0;
 
   const bgStyle = useMemo(() => {
@@ -66,17 +94,14 @@ export function NowPlayingView({ onBack }: NowPlayingViewProps) {
   }, [lyrics, currentTime]);
 
   useEffect(() => {
-    if (currentLyricIndex >= 2 && lyricsContainerRef.current) {
+    if (currentLyricIndex >= 0 && lyricsContainerRef.current) {
       const container = lyricsContainerRef.current;
       const el = container.children[currentLyricIndex] as HTMLElement;
       if (el) {
-        const containerTop = container.scrollTop;
         const containerHeight = container.clientHeight;
         const elTop = el.offsetTop;
         const elHeight = el.offsetHeight;
-        if (elTop < containerTop + containerHeight * 0.3 || elTop + elHeight > containerTop + containerHeight * 0.7) {
-          container.scrollTo({ top: elTop - containerHeight * 0.4, behavior: 'smooth' });
-        }
+        container.scrollTo({ top: elTop - containerHeight / 2 + elHeight / 2, behavior: 'smooth' });
       }
     }
   }, [currentLyricIndex]);
@@ -325,7 +350,7 @@ export function NowPlayingView({ onBack }: NowPlayingViewProps) {
                     : "M1 8v8h4l5.7 5.3a1 1 0 001.3 0V2.7a1 1 0 00-1.3 0L5 8H1zm13.5 4a4.5 4.5 0 01-2.12 3.82.75.75 0 00.74 1.3 6 6 0 000-10.24.75.75 0 10-.74 1.3A4.5 4.5 0 0114.5 12z"
                   }/>
                 </svg>
-                <div className="np-volume-bar" ref={volumeRef} onClick={handleVolumeClick}>
+                <div className="np-volume-bar" ref={volumeRef} onMouseDown={handleVolumeDown}>
                   <div className="progress-track">
                     <div className="progress-fill" style={{ width: `${volume * 100}%` }} />
                     <div className="progress-thumb" style={{ left: `${volume * 100}%` }} />

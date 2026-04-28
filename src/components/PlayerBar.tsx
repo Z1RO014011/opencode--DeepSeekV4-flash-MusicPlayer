@@ -1,4 +1,4 @@
-import React, { useRef, useCallback } from 'react';
+import React, { useRef, useCallback, useState, useEffect } from 'react';
 import { usePlayer } from '../context/PlayerContext';
 
 interface PlayerBarProps {
@@ -10,6 +10,7 @@ export function PlayerBar({ onOpenNowPlaying }: PlayerBarProps) {
   const { currentSong, isPlaying, currentTime, duration, volume, isShuffled, repeatMode } = state;
   const progressRef = useRef<HTMLDivElement>(null);
   const volumeRef = useRef<HTMLDivElement>(null);
+  const [draggingVolume, setDraggingVolume] = useState(false);
 
   function formatTime(sec: number): string {
     if (isNaN(sec) || sec < 0) return '0:00';
@@ -34,6 +35,33 @@ export function PlayerBar({ onOpenNowPlaying }: PlayerBarProps) {
     const rect = el.getBoundingClientRect();
     const pct = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
     dispatch({ type: 'SET_VOLUME', volume: pct });
+  }, [dispatch]);
+
+  useEffect(() => {
+    if (!draggingVolume) return;
+    const handleMove = (e: MouseEvent) => {
+      const el = volumeRef.current;
+      if (!el) return;
+      const rect = el.getBoundingClientRect();
+      const pct = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
+      dispatch({ type: 'SET_VOLUME', volume: pct });
+    };
+    const handleUp = () => setDraggingVolume(false);
+    document.addEventListener('mousemove', handleMove);
+    document.addEventListener('mouseup', handleUp);
+    return () => {
+      document.removeEventListener('mousemove', handleMove);
+      document.removeEventListener('mouseup', handleUp);
+    };
+  }, [draggingVolume, dispatch]);
+
+  const handleVolumeDown = useCallback((e: React.MouseEvent) => {
+    const el = volumeRef.current;
+    if (!el) return;
+    const rect = el.getBoundingClientRect();
+    const pct = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
+    dispatch({ type: 'SET_VOLUME', volume: pct });
+    setDraggingVolume(true);
   }, [dispatch]);
 
   const repeatIcons: Record<string, string> = {
@@ -150,7 +178,7 @@ export function PlayerBar({ onOpenNowPlaying }: PlayerBarProps) {
               : "M1 8v8h4l5.7 5.3a1 1 0 001.3 0V2.7a1 1 0 00-1.3 0L5 8H1zm13.5 4a4.5 4.5 0 01-2.12 3.82.75.75 0 00.74 1.3 6 6 0 000-10.24.75.75 0 10-.74 1.3A4.5 4.5 0 0114.5 12zm4.14-5.85a.75.75 0 10-.78 1.28A4.5 4.5 0 0119.5 12a4.5 4.5 0 01-1.64 3.43.75.75 0 00.78 1.28A6 6 0 0021 12a6 6 0 00-2.36-4.85z"
           }/>
         </svg>
-        <div className="volume-bar" ref={volumeRef} onClick={handleVolumeClick}>
+        <div className="volume-bar" ref={volumeRef} onMouseDown={handleVolumeDown}>
           <div className="progress-track">
             <div className="progress-fill" style={{ width: `${volume * 100}%` }} />
             <div className="progress-thumb" style={{ left: `${volume * 100}%` }} />
