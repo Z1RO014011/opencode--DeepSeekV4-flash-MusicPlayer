@@ -30,6 +30,7 @@ npm run dev
 |------|------|------|
 | macOS (Apple Silicon) | [Jasmine.Music.Player-1.0.0-arm64.dmg](https://github.com/Z1RO014011/opencode--DeepSeekV4-flash-MusicPlayer/releases/download/v1.0.0/Jasmine.Music.Player-1.0.0-arm64.dmg) | DMG 安装包 |
 | macOS (Apple Silicon) | [Jasmine.Music.Player-1.0.0-arm64-mac.zip](https://github.com/Z1RO014011/opencode--DeepSeekV4-flash-MusicPlayer/releases/download/v1.0.0/Jasmine.Music.Player-1.0.0-arm64-mac.zip) | ZIP 便携版 |
+| Windows (x64) | [Jasmine.Music.Player-1.0.0-win.zip](https://github.com/Z1RO014011/opencode--DeepSeekV4-flash-MusicPlayer/releases/download/v1.0.0/Jasmine.Music.Player-1.0.0-win.zip) | ZIP 便携版 |
 | Windows (ARM64) | [Jasmine.Music.Player.1.0.0.exe](https://github.com/Z1RO014011/opencode--DeepSeekV4-flash-MusicPlayer/releases/download/v1.0.0/Jasmine.Music.Player.1.0.0.exe) | 单文件便携版 |
 | Linux (ARM64) | [Jasmine.Music.Player-1.0.0-arm64.AppImage](https://github.com/Z1RO014011/opencode--DeepSeekV4-flash-MusicPlayer/releases/download/v1.0.0/Jasmine.Music.Player-1.0.0-arm64.AppImage) | AppImage 免安装 |
 
