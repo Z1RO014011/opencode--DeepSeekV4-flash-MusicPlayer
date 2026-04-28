@@ -1,5 +1,6 @@
 import React, { useRef, useCallback, useMemo, useState, useEffect } from 'react';
 import { usePlayer } from '../context/PlayerContext';
+import { generateShareCard } from '../lib/share';
 
 interface NowPlayingViewProps {
   onBack: () => void;
@@ -17,6 +18,8 @@ export function NowPlayingView({ onBack }: NowPlayingViewProps) {
   const [editingLyrics, setEditingLyrics] = useState(false);
   const [lrcInput, setLrcInput] = useState('');
   const [draggingVolume, setDraggingVolume] = useState(false);
+  const [sharing, setSharing] = useState(false);
+  const [shareImage, setShareImage] = useState<string | null>(null);
 
   useEffect(() => {
     setShowLyrics((currentSong?.lyrics?.length ?? 0) > 0);
@@ -115,6 +118,25 @@ export function NowPlayingView({ onBack }: NowPlayingViewProps) {
     setLrcInput('');
     setEditingLyrics(true);
   }, []);
+
+  const handleShare = useCallback(async () => {
+    if (!currentSong) return;
+    setSharing(true);
+    try {
+      const dataUrl = await generateShareCard(currentSong);
+      setShareImage(dataUrl);
+    } catch {
+      setSharing(false);
+    }
+  }, [currentSong]);
+
+  const handleDownloadShare = useCallback(() => {
+    if (!shareImage || !currentSong) return;
+    const a = document.createElement('a');
+    a.href = shareImage;
+    a.download = `${currentSong.title} - ${currentSong.artist}.png`;
+    a.click();
+  }, [shareImage, currentSong]);
 
   if (!currentSong) {
     return (
@@ -380,10 +402,51 @@ export function NowPlayingView({ onBack }: NowPlayingViewProps) {
                   添加歌词
                 </button>
               )}
+              <button className="nowplaying-share-btn" onClick={handleShare} title="分享歌曲">
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
+                  <path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92s2.92-1.31 2.92-2.92-1.31-2.92-2.92-2.92z"/>
+                </svg>
+                分享
+              </button>
             </>
           )}
         </div>
       </div>
+
+      {shareImage && (
+        <div className="modal-overlay" onClick={() => { setShareImage(null); setSharing(false); }}>
+          <div className="share-modal" onClick={e => e.stopPropagation()}>
+            <div className="modal-header">
+              <h2 className="modal-title">分享卡片</h2>
+              <button className="modal-close" onClick={() => { setShareImage(null); setSharing(false); }}>
+                <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
+                  <path d="M3.293 3.293a1 1 0 011.414 0L12 10.586l7.293-7.293a1 1 0 111.414 1.414L13.414 12l7.293 7.293a1 1 0 01-1.414 1.414L12 13.414l-7.293 7.293a1 1 0 01-1.414-1.414L10.586 12 3.293 4.707a1 1 0 010-1.414z"/>
+                </svg>
+              </button>
+            </div>
+            <div className="share-card-preview">
+              <img src={shareImage} alt="分享卡片" />
+            </div>
+            <div className="share-modal-actions">
+              <button className="share-download-btn" onClick={handleDownloadShare}>
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor">
+                  <path d="M19 10a1 1 0 01 1 1v6a3 3 0 01-3 3H7a3 3 0 01-3-3v-6a1 1 0 012 0v6a1 1 0 001 1h10a1 1 0 001-1v-6a1 1 0 011-1zm-7-7a1 1 0 01.707.293l4 4a1 1 0 01-1.414 1.414L13 6.414V15a1 1 0 11-2 0V6.414L8.707 8.707a1 1 0 01-1.414-1.414l4-4A1 1 0 0112 3z"/>
+                </svg>
+                下载图片
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {sharing && !shareImage && (
+        <div className="modal-overlay">
+          <div className="share-loading">
+            <div className="share-spinner" />
+            <p>生成分享卡片中...</p>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
