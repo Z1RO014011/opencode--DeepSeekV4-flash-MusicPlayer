@@ -537,6 +537,65 @@
   transform: scale(1.05);
 }
 
+.playlist-cover-edit-btn {
+  position: absolute;
+  top: 24px;
+  right: 32px;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  z-index: 2;
+  transition: background 0.2s, transform 0.2s;
+}
+
+.playlist-cover-edit-btn:hover {
+  background: rgba(0, 0, 0, 0.7);
+  transform: scale(1.05);
+}
+
+.playlist-cover-editor {
+  position: absolute;
+  top: 70px;
+  right: 32px;
+  background: var(--bg-elevated);
+  border-radius: 12px;
+  padding: 16px;
+  z-index: 3;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+  min-width: 240px;
+}
+
+.playlist-cover-editor-section {
+  margin-bottom: 12px;
+}
+
+.playlist-cover-editor-section:last-child {
+  margin-bottom: 0;
+}
+
+.playlist-cover-editor-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  margin-bottom: 8px;
+}
+
+.playlist-cover-editor .cover-upload-btn {
+  justify-content: flex-start;
+  width: 100%;
+}
+
+.playlist-cover-editor .color-picker {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
 .playlist-detail-info {
   position: relative;
   z-index: 1;

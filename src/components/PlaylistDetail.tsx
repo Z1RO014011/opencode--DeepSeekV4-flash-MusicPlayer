@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { Playlist, Song } from '../types';
 import { usePlayer, LIKED_PLAYLIST_ID } from '../context/PlayerContext';
+import { gradientColors } from '../data';
 
 interface PlaylistDetailProps {
   playlist: Playlist;
@@ -8,11 +9,13 @@ interface PlaylistDetailProps {
 }
 
 export function PlaylistDetail({ playlist, onBack }: PlaylistDetailProps) {
-  const { playPlaylist, playSong, removeSongFromPlaylist, deletePlaylist, renamePlaylist, userSongs, addSongsToPlaylist } = usePlayer();
+  const { playPlaylist, playSong, removeSongFromPlaylist, deletePlaylist, renamePlaylist, userSongs, addSongsToPlaylist, updatePlaylistCover } = usePlayer();
   const isLikedPlaylist = playlist.id === LIKED_PLAYLIST_ID;
   const [isEditing, setIsEditing] = useState(false);
   const [editName, setEditName] = useState(playlist.name);
   const [showAddSongs, setShowAddSongs] = useState(false);
+  const [showCoverEditor, setShowCoverEditor] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   function formatDuration(seconds: number): string {
     const h = Math.floor(seconds / 3600);
@@ -38,6 +41,24 @@ export function PlaylistDetail({ playlist, onBack }: PlaylistDetailProps) {
     addSongsToPlaylist(playlist.id, [song]);
   }
 
+  function handleCoverImageSelect(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = () => {
+      const dataUrl = reader.result as string;
+      const coverStyle = `url(${dataUrl}) center/cover no-repeat`;
+      updatePlaylistCover(playlist.id, coverStyle);
+      setShowCoverEditor(false);
+    };
+    reader.readAsDataURL(file);
+  }
+
+  function handleCoverColorSelect(color: string) {
+    updatePlaylistCover(playlist.id, color);
+    setShowCoverEditor(false);
+  }
+
   const availableSongs = userSongs.filter(s => !playlist.songs.some(ps => ps.id === s.id));
 
   return (
@@ -48,6 +69,52 @@ export function PlaylistDetail({ playlist, onBack }: PlaylistDetailProps) {
             <path d="M15.5 3.5a1 1 0 010 1.5L9.42 12l6.08 7a1 1 0 01-1.5 1.5l-6.5-7.5a1 1 0 010-1.5l6.5-7.5a1 1 0 011.5 0z"/>
           </svg>
         </button>
+
+        <button
+          className="playlist-cover-edit-btn"
+          onClick={() => setShowCoverEditor(!showCoverEditor)}
+          title="更换封面"
+        >
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
+            <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4h2v4h14v-4h2zM7 9l3-4 3 4h2l-4-5-4 5h2zm10-1V3h-2v5h-3l4 5 4-5h-3z"/>
+          </svg>
+        </button>
+
+        {showCoverEditor && (
+          <div className="playlist-cover-editor" onClick={e => e.stopPropagation()}>
+            <div className="playlist-cover-editor-section">
+              <p className="playlist-cover-editor-label">上传图片</p>
+              <button className="cover-upload-btn" onClick={() => fileInputRef.current?.click()}>
+                <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor">
+                  <path d="M19 10a1 1 0 01 1 1v6a3 3 0 01-3 3H7a3 3 0 01-3-3v-6a1 1 0 012 0v6a1 1 0 001 1h10a1 1 0 001-1v-6a1 1 0 011-1zm-7-7a1 1 0 01.707.293l4 4a1 1 0 01-1.414 1.414L13 6.414V15a1 1 0 11-2 0V6.414L8.707 8.707a1 1 0 01-1.414-1.414l4-4A1 1 0 0112 3z"/>
+                </svg>
+                选择图片
+              </button>
+            </div>
+            <div className="playlist-cover-editor-section">
+              <p className="playlist-cover-editor-label">或选渐变色</p>
+              <div className="color-picker">
+                {gradientColors.map((c, i) => (
+                  <button
+                    key={i}
+                    type="button"
+                    className={`color-swatch ${playlist.coverColor === c ? 'active' : ''}`}
+                    style={{ background: c }}
+                    onClick={() => handleCoverColorSelect(c)}
+                  />
+                ))}
+              </div>
+            </div>
+          </div>
+        )}
+
+        <input
+          ref={fileInputRef}
+          type="file"
+          accept="image/*"
+          onChange={handleCoverImageSelect}
+          style={{ display: 'none' }}
+        />
         <div className="playlist-detail-info">
           <span className="playlist-detail-label">歌单</span>
           {isEditing && !isLikedPlaylist ? (

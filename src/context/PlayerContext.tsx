@@ -158,6 +158,7 @@ interface PlayerContextType {
   isLiked: (songId: string) => boolean;
   toggleLike: (song: Song) => void;
   updateSongLyrics: (songId: string, lrcText: string) => void;
+  updatePlaylistCover: (playlistId: string, coverColor: string) => void;
 }
 
 const PlayerContext = createContext<PlayerContextType | null>(null);
@@ -520,13 +521,19 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
     });
   }, []);
 
+  const updatePlaylistCover = useCallback((playlistId: string, coverColor: string) => {
+    setUserPlaylists(prev =>
+      prev.map(pl => pl.id === playlistId ? { ...pl, coverColor } : pl)
+    );
+  }, []);
+
   return (
     <PlayerContext.Provider value={{
       state, dispatch, playPlaylist, playSong, togglePlay, nextTrack, prevTrack, audioRef,
       userSongs, userPlaylists,
       importFiles, deleteSong, createPlaylist, deletePlaylist,
       renamePlaylist, addSongsToPlaylist, removeSongFromPlaylist,
-      likedPlaylist, isLiked, toggleLike, updateSongLyrics,
+      likedPlaylist, isLiked, toggleLike, updateSongLyrics, updatePlaylistCover,
     }}>
       {children}
     </PlayerContext.Provider>
