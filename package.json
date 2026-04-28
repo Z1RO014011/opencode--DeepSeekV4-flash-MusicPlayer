@@ -26,13 +26,16 @@
       "electron/**/*"
     ],
     "mac": {
+      "icon": "assets/icon.png",
       "target": ["dmg", "zip"]
     },
     "linux": {
+      "icon": "assets/icon.png",
       "target": ["AppImage", "deb"],
       "maintainer": "Z1RO014011"
     },
     "win": {
+      "icon": "assets/icon.png",
       "target": "zip"
     }
   },
