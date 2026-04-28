@@ -2022,10 +2022,7 @@
   flex: 1;
   overflow-y: auto;
   min-height: 0;
-  mask-image: linear-gradient(180deg, transparent 0%, #000 10%, #000 90%, transparent 100%);
-  -webkit-mask-image: linear-gradient(180deg, transparent 0%, #000 10%, #000 90%, transparent 100%);
-  padding: 40px 0;
-  scroll-behavior: smooth;
+  padding: 60px 0;
 }
 
 .nowplaying-lyrics-container::-webkit-scrollbar {
@@ -2033,22 +2030,23 @@
 }
 
 .nowplaying-lyric-line {
-  font-size: 18px;
-  line-height: 2.2;
-  color: rgba(255, 255, 255, 0.35);
-  transition: color 0.3s, font-size 0.3s, font-weight 0.3s;
-  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
+  font-size: 17px;
+  line-height: 2.4;
+  color: rgba(255, 255, 255, 0.3);
+  transition: color 0.25s, font-size 0.25s, font-weight 0.25s, opacity 0.25s;
   padding: 0 4px;
+  cursor: default;
 }
 
 .nowplaying-lyric-line.past {
-  color: rgba(255, 255, 255, 0.5);
+  color: rgba(255, 255, 255, 0.45);
 }
 
 .nowplaying-lyric-line.active {
-  color: #fff;
+  color: #1ed760;
   font-size: 22px;
   font-weight: 700;
+  text-shadow: 0 0 12px rgba(30, 215, 96, 0.3);
 }
 
 .nowplaying-view-progress-mini {

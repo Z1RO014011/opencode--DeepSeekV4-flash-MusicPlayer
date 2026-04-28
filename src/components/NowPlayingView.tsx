@@ -11,6 +11,7 @@ export function NowPlayingView({ onBack }: NowPlayingViewProps) {
   const progressRef = useRef<HTMLDivElement>(null);
   const volumeRef = useRef<HTMLDivElement>(null);
   const lyricsContainerRef = useRef<HTMLDivElement>(null);
+  const lineRefs = useRef<Map<number, HTMLParagraphElement>>(new Map());
 
   const [showLyrics, setShowLyrics] = useState(() => (currentSong?.lyrics?.length ?? 0) > 0);
   const [editingLyrics, setEditingLyrics] = useState(false);
@@ -20,6 +21,7 @@ export function NowPlayingView({ onBack }: NowPlayingViewProps) {
   useEffect(() => {
     setShowLyrics((currentSong?.lyrics?.length ?? 0) > 0);
     setEditingLyrics(false);
+    lineRefs.current.clear();
   }, [currentSong?.id]);
 
   function formatTime(sec: number): string {
@@ -94,16 +96,12 @@ export function NowPlayingView({ onBack }: NowPlayingViewProps) {
   }, [lyrics, currentTime]);
 
   useEffect(() => {
-    if (currentLyricIndex >= 0 && lyricsContainerRef.current) {
-      const container = lyricsContainerRef.current;
-      const el = container.children[currentLyricIndex] as HTMLElement;
-      if (el) {
-        const containerHeight = container.clientHeight;
-        const elTop = el.offsetTop;
-        const elHeight = el.offsetHeight;
-        container.scrollTo({ top: elTop - containerHeight / 2 + elHeight / 2, behavior: 'smooth' });
-      }
-    }
+    if (currentLyricIndex < 0) return;
+    const el = lineRefs.current.get(currentLyricIndex);
+    if (!el) return;
+    requestAnimationFrame(() => {
+      el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    });
   }, [currentLyricIndex]);
 
   const handleSaveLyrics = useCallback(() => {
@@ -207,6 +205,7 @@ export function NowPlayingView({ onBack }: NowPlayingViewProps) {
                 {lyrics.map((line, i) => (
                   <p
                     key={i}
+                    ref={el => { if (el) lineRefs.current.set(i, el); }}
                     className={`nowplaying-lyric-line ${i === currentLyricIndex ? 'active' : ''} ${i <= currentLyricIndex ? 'past' : ''}`}
                   >
                     {line.text}
