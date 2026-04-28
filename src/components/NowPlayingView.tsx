@@ -12,9 +12,14 @@ export function NowPlayingView({ onBack }: NowPlayingViewProps) {
   const volumeRef = useRef<HTMLDivElement>(null);
   const lyricsContainerRef = useRef<HTMLDivElement>(null);
 
-  const [showLyrics, setShowLyrics] = useState(false);
+  const [showLyrics, setShowLyrics] = useState(() => (currentSong?.lyrics?.length ?? 0) > 0);
   const [editingLyrics, setEditingLyrics] = useState(false);
   const [lrcInput, setLrcInput] = useState('');
+
+  useEffect(() => {
+    setShowLyrics((currentSong?.lyrics?.length ?? 0) > 0);
+    setEditingLyrics(false);
+  }, [currentSong?.id]);
 
   function formatTime(sec: number): string {
     if (isNaN(sec) || sec < 0) return '0:00';
