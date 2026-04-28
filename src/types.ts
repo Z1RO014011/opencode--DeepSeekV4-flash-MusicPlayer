@@ -1,3 +1,8 @@
+export interface LyricLine {
+  time: number;
+  text: string;
+}
+
 export interface Song {
   id: string;
   title: string;
@@ -6,6 +11,7 @@ export interface Song {
   duration: number;
   coverColor: string;
   audioUrl?: string;
+  lyrics?: LyricLine[];
 }
 
 export interface Playlist {

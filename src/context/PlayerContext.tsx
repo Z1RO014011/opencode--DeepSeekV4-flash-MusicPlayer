@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useReducer, useRef, useCallback, useEffect, useState } from 'react';
-import { PlayerState, Song, Playlist } from '../types';
+import { PlayerState, Song, Playlist, LyricLine } from '../types';
 import { gradientColors } from '../data';
 import { saveAudioFile, loadAudioFile, deleteAudioFile, saveSongs, loadSongs, savePlaylists, loadPlaylists } from '../lib/db';
 
@@ -114,6 +114,24 @@ function nextColor(): string {
   return c;
 }
 
+function parseLRC(lrcText: string): LyricLine[] {
+  const lines = lrcText.split('\n');
+  const result: LyricLine[] = [];
+  const regex = /\[(\d{2}):(\d{2})\.(\d{2,3})\](.*)/;
+  for (const line of lines) {
+    const match = line.match(regex);
+    if (match) {
+      const min = parseInt(match[1], 10);
+      const sec = parseInt(match[2], 10);
+      const ms = parseInt(match[3].padEnd(3, '0'), 10);
+      const time = min * 60 + sec + ms / 1000;
+      result.push({ time, text: match[4].trim() });
+    }
+  }
+  result.sort((a, b) => a.time - b.time);
+  return result;
+}
+
 export const LIKED_PLAYLIST_ID = '__liked__';
 
 interface PlayerContextType {
@@ -139,6 +157,7 @@ interface PlayerContextType {
   likedPlaylist: Playlist | undefined;
   isLiked: (songId: string) => boolean;
   toggleLike: (song: Song) => void;
+  updateSongLyrics: (songId: string, lrcText: string) => void;
 }
 
 const PlayerContext = createContext<PlayerContextType | null>(null);
@@ -176,6 +195,7 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
             duration: meta.duration,
             coverColor: meta.coverColor,
             audioUrl: audio?.url || undefined,
+            lyrics: meta.lyrics || undefined,
           });
           restoredPlaylistSongs.set(meta.id, songs[songs.length - 1]);
         }
@@ -491,13 +511,22 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
     );
   }, []);
 
+  const updateSongLyrics = useCallback((songId: string, lrcText: string) => {
+    const parsed = parseLRC(lrcText);
+    setUserSongs(prev => {
+      const next = prev.map(s => s.id === songId ? { ...s, lyrics: parsed } : s);
+      saveSongs(next);
+      return next;
+    });
+  }, []);
+
   return (
     <PlayerContext.Provider value={{
       state, dispatch, playPlaylist, playSong, togglePlay, nextTrack, prevTrack, audioRef,
       userSongs, userPlaylists,
       importFiles, deleteSong, createPlaylist, deletePlaylist,
       renamePlaylist, addSongsToPlaylist, removeSongFromPlaylist,
-      likedPlaylist, isLiked, toggleLike,
+      likedPlaylist, isLiked, toggleLike, updateSongLyrics,
     }}>
       {children}
     </PlayerContext.Provider>

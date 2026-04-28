@@ -1879,3 +1879,223 @@
 .player-like-btn {
   flex-shrink: 0;
 }
+
+/* ============ LYRICS ============ */
+
+.nowplaying-view-top-bar {
+  position: absolute;
+  top: 24px;
+  left: 24px;
+  right: 24px;
+  z-index: 10;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.nowplaying-view-top-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.nowplaying-lyrics-edit-btn {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: rgba(255, 255, 255, 0.6);
+  transition: background 0.2s, color 0.2s, transform 0.2s;
+}
+
+.nowplaying-lyrics-edit-btn:hover {
+  background: rgba(0, 0, 0, 0.6);
+  color: #fff;
+  transform: scale(1.05);
+}
+
+.nowplaying-lyrics-toggle {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: rgba(255, 255, 255, 0.6);
+  transition: background 0.2s, color 0.2s, transform 0.2s;
+}
+
+.nowplaying-lyrics-toggle:hover {
+  background: rgba(0, 0, 0, 0.6);
+  color: #fff;
+  transform: scale(1.05);
+}
+
+.nowplaying-lyrics-toggle.active {
+  color: var(--accent);
+}
+
+.nowplaying-lyrics-section {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-height: 0;
+}
+
+.nowplaying-view-text-compact {
+  flex-shrink: 0;
+}
+
+.nowplaying-view-title-small {
+  font-size: 22px !important;
+}
+
+.nowplaying-view-artist-small {
+  font-size: 14px !important;
+}
+
+.nowplaying-lyrics-container {
+  flex: 1;
+  overflow-y: auto;
+  min-height: 0;
+  mask-image: linear-gradient(180deg, transparent 0%, #000 10%, #000 90%, transparent 100%);
+  -webkit-mask-image: linear-gradient(180deg, transparent 0%, #000 10%, #000 90%, transparent 100%);
+  padding: 40px 0;
+  scroll-behavior: smooth;
+}
+
+.nowplaying-lyrics-container::-webkit-scrollbar {
+  display: none;
+}
+
+.nowplaying-lyric-line {
+  font-size: 18px;
+  line-height: 2.2;
+  color: rgba(255, 255, 255, 0.35);
+  transition: color 0.3s, font-size 0.3s, font-weight 0.3s;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
+  padding: 0 4px;
+}
+
+.nowplaying-lyric-line.past {
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.nowplaying-lyric-line.active {
+  color: #fff;
+  font-size: 22px;
+  font-weight: 700;
+}
+
+.nowplaying-view-progress-mini {
+  flex-shrink: 0;
+}
+
+.nowplaying-view-controls-mini {
+  flex-shrink: 0;
+  justify-content: center;
+}
+
+.nowplaying-view-controls-mini .nowplaying-view-play {
+  width: 40px;
+  height: 40px;
+}
+
+/* ============ LYRICS EDITOR ============ */
+
+.nowplaying-lyrics-editor {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.nowplaying-lyrics-editor-hint {
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.nowplaying-lyrics-textarea {
+  flex: 1;
+  min-height: 200px;
+  padding: 12px 16px;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(0, 0, 0, 0.3);
+  color: #fff;
+  font-size: 14px;
+  font-family: 'SF Mono', 'Menlo', 'Consolas', monospace;
+  line-height: 1.6;
+  resize: vertical;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.nowplaying-lyrics-textarea:focus {
+  border-color: var(--accent);
+}
+
+.nowplaying-lyrics-textarea::placeholder {
+  color: rgba(255, 255, 255, 0.2);
+}
+
+.nowplaying-lyrics-editor-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+}
+
+.nowplaying-lyrics-btn-cancel {
+  padding: 8px 20px;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.6);
+  background: rgba(255, 255, 255, 0.08);
+  transition: background 0.2s;
+}
+
+.nowplaying-lyrics-btn-cancel:hover {
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.nowplaying-lyrics-btn-save {
+  padding: 8px 20px;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  background: var(--accent);
+  color: #000;
+  transition: background 0.2s, transform 0.15s;
+}
+
+.nowplaying-lyrics-btn-save:hover {
+  background: var(--accent-hover);
+  transform: scale(1.02);
+}
+
+/* ============ ADD LYRICS BUTTON ============ */
+
+.nowplaying-add-lyrics-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.06);
+  color: rgba(255, 255, 255, 0.4);
+  font-size: 13px;
+  font-weight: 500;
+  transition: background 0.2s, color 0.2s;
+  width: fit-content;
+}
+
+.nowplaying-add-lyrics-btn:hover {
+  background: rgba(255, 255, 255, 0.12);
+  color: rgba(255, 255, 255, 0.8);
+}

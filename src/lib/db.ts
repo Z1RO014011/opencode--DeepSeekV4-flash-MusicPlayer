@@ -69,6 +69,7 @@ export function saveSongs(songs: unknown[]): void {
       album: s.album,
       duration: s.duration,
       coverColor: s.coverColor,
+      lyrics: s.lyrics,
     }));
     localStorage.setItem(LS_KEYS.songs, JSON.stringify(data));
   } catch {}
