@@ -15,7 +15,8 @@ type PlayerAction =
   | { type: 'TOGGLE_SHUFFLE' }
   | { type: 'CYCLE_REPEAT' }
   | { type: 'SET_QUEUE'; songs: Song[]; index: number }
-  | { type: 'SEEK'; time: number };
+  | { type: 'SEEK'; time: number }
+  | { type: 'SET_SONG_LYRICS'; lyrics: LyricLine[] };
 
 const initialState: PlayerState = {
   currentSong: null,
@@ -102,6 +103,10 @@ function playerReducer(state: PlayerState, action: PlayerAction): PlayerState {
       return { ...state, queue: action.songs, queueIndex: action.index };
     case 'SEEK':
       return { ...state, currentTime: action.time };
+    case 'SET_SONG_LYRICS':
+      return state.currentSong
+        ? { ...state, currentSong: { ...state.currentSong, lyrics: action.lyrics } }
+        : state;
     default:
       return state;
   }
@@ -119,7 +124,9 @@ function parseLRC(lrcText: string): LyricLine[] {
   const result: LyricLine[] = [];
   const regex = /\[(\d{2}):(\d{2})\.(\d{2,3})\](.*)/;
   for (const line of lines) {
-    const match = line.match(regex);
+    const trimmed = line.trim();
+    if (!trimmed || trimmed.startsWith('{')) continue;
+    const match = trimmed.match(regex);
     if (match) {
       const min = parseInt(match[1], 10);
       const sec = parseInt(match[2], 10);
@@ -519,6 +526,9 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
       saveSongs(next);
       return next;
     });
+    if (stateRef.current.currentSong?.id === songId) {
+      dispatch({ type: 'SET_SONG_LYRICS', lyrics: parsed });
+    }
   }, []);
 
   const updatePlaylistCover = useCallback((playlistId: string, coverColor: string) => {

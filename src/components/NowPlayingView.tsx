@@ -112,6 +112,7 @@ export function NowPlayingView({ onBack }: NowPlayingViewProps) {
     updateSongLyrics(currentSong.id, lrcInput);
     setEditingLyrics(false);
     setLrcInput('');
+    setShowLyrics(true);
   }, [currentSong, lrcInput, updateSongLyrics]);
 
   const handleOpenEditor = useCallback(() => {
