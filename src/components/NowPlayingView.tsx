@@ -129,27 +129,15 @@ export function NowPlayingView({ onBack }: NowPlayingViewProps) {
   }, [lyrics, currentTime]);
 
   const LINE_HEIGHT = 40.8;
-  const [containerHeight, setContainerHeight] = useState(0);
 
   useEffect(() => {
-    if (!lyricsContainerRef.current) return;
-    const obs = new ResizeObserver(([entry]) => {
-      setContainerHeight(entry.contentRect.height);
-    });
-    obs.observe(lyricsContainerRef.current);
-    return () => obs.disconnect();
-  }, []);
-
-  const trackStyle = useMemo(() => {
-    if (currentLyricIndex < 0 || containerHeight === 0) return {};
-    const center = containerHeight / 2;
-    const offset = currentLyricIndex * LINE_HEIGHT + LINE_HEIGHT / 2;
-    const pad = center;
-    return {
-      transform: `translateY(${center - offset}px)`,
-      padding: `${pad}px 0`,
-    };
-  }, [currentLyricIndex, containerHeight]);
+    if (currentLyricIndex < 0) return;
+    const container = lyricsContainerRef.current;
+    if (!container) return;
+    const line = container.children[currentLyricIndex] as HTMLElement;
+    if (!line) return;
+    line.scrollIntoView({ block: 'center', behavior: 'smooth' });
+  }, [currentLyricIndex]);
 
   const handleSaveLyrics = useCallback(() => {
     if (!currentSong || !lrcInput.trim()) return;
@@ -269,16 +257,14 @@ export function NowPlayingView({ onBack }: NowPlayingViewProps) {
               </div>
 
               <div className="nowplaying-lyrics-container" ref={lyricsContainerRef}>
-                <div className="nowplaying-lyrics-track" style={trackStyle}>
-                  {lyrics.map((line, i) => (
-                    <p
-                      key={i}
-                      className={`nowplaying-lyric-line ${i === currentLyricIndex ? 'active' : ''} ${i <= currentLyricIndex ? 'past' : ''}`}
-                    >
-                      {line.text}
-                    </p>
-                  ))}
-                </div>
+                {lyrics.map((line, i) => (
+                  <p
+                    key={i}
+                    className={`nowplaying-lyric-line ${i === currentLyricIndex ? 'active' : ''} ${i <= currentLyricIndex ? 'past' : ''}`}
+                  >
+                    {line.text}
+                  </p>
+                ))}
               </div>
 
               <div className="nowplaying-view-progress-section nowplaying-view-progress-mini">
