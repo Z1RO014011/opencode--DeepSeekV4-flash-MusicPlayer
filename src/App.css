@@ -2023,10 +2023,13 @@
 .nowplaying-lyrics-container {
   position: relative;
   flex: 1;
-  overflow-y: auto;
+  overflow: hidden;
   min-height: 0;
-  padding: 60px 0;
-  scroll-behavior: smooth;
+}
+
+.nowplaying-lyrics-track {
+  transition: transform 0.35s cubic-bezier(0.25, 0.1, 0.25, 1);
+  padding: calc(50vh - 20px) 0;
 }
 
 .nowplaying-lyrics-container::-webkit-scrollbar {
