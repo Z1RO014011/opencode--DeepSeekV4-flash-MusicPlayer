@@ -2019,6 +2019,7 @@
 }
 
 .nowplaying-lyrics-container {
+  position: relative;
   flex: 1;
   overflow-y: auto;
   min-height: 0;
