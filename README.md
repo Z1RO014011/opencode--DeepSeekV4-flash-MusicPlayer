@@ -4,6 +4,9 @@ Spotify 风格的全功能 Web 音乐播放器，基于 **Vite + React 18 + Type
 
 ## ✨ 功能
 
+- **歌词显示** — 支持 LRC 格式歌词，滚动同步高亮
+- **歌单封面** — 支持上传图片或选择渐变色作为歌单封面
+- **歌曲分享** — 一键生成精美分享卡片，下载为 PNG
 - **播放控制** — 播放/暂停、上一首/下一首、进度拖拽、音量调节
 - **播放模式** — 随机播放、循环模式（关闭/全部循环/单曲循环）
 - **歌单管理** — 创建/删除/重命名歌单，添加/移除歌曲
@@ -28,11 +31,11 @@ npm run dev
 
 | 系统 | 下载 | 说明 |
 |------|------|------|
-| macOS (Apple Silicon) | [Jasmine.Music.Player-1.0.0-arm64.dmg](https://github.com/Z1RO014011/opencode--DeepSeekV4-flash-MusicPlayer/releases/download/v1.0.0/Jasmine.Music.Player-1.0.0-arm64.dmg) | DMG 安装包 |
-| macOS (Apple Silicon) | [Jasmine.Music.Player-1.0.0-arm64-mac.zip](https://github.com/Z1RO014011/opencode--DeepSeekV4-flash-MusicPlayer/releases/download/v1.0.0/Jasmine.Music.Player-1.0.0-arm64-mac.zip) | ZIP 便携版 |
-| Windows (x64) | [Jasmine.Music.Player-1.0.0-win.zip](https://github.com/Z1RO014011/opencode--DeepSeekV4-flash-MusicPlayer/releases/download/v1.0.0/Jasmine.Music.Player-1.0.0-win.zip) | ZIP 便携版 |
-| Windows (ARM64) | [Jasmine.Music.Player.1.0.0.exe](https://github.com/Z1RO014011/opencode--DeepSeekV4-flash-MusicPlayer/releases/download/v1.0.0/Jasmine.Music.Player.1.0.0.exe) | 单文件便携版 |
-| Linux (ARM64) | [Jasmine.Music.Player-1.0.0-arm64.AppImage](https://github.com/Z1RO014011/opencode--DeepSeekV4-flash-MusicPlayer/releases/download/v1.0.0/Jasmine.Music.Player-1.0.0-arm64.AppImage) | AppImage 免安装 |
+| macOS (Apple Silicon) | [Jasmine.Music.Player-1.1.0-arm64.dmg](https://github.com/Z1RO014011/opencode--DeepSeekV4-flash-MusicPlayer/releases/download/v1.1.0/Jasmine.Music.Player-1.1.0-arm64.dmg) | DMG 安装包 |
+| macOS (Apple Silicon) | [Jasmine.Music.Player-1.1.0-arm64-mac.zip](https://github.com/Z1RO014011/opencode--DeepSeekV4-flash-MusicPlayer/releases/download/v1.1.0/Jasmine.Music.Player-1.1.0-arm64-mac.zip) | ZIP 便携版 |
+| Windows (x64) | [Jasmine.Music.Player-1.1.0-win.zip](https://github.com/Z1RO014011/opencode--DeepSeekV4-flash-MusicPlayer/releases/download/v1.1.0/Jasmine.Music.Player-1.1.0-win.zip) | ZIP 便携版 |
+| Windows (ARM64) | [Jasmine.Music.Player-1.1.0-arm64-win.zip](https://github.com/Z1RO014011/opencode--DeepSeekV4-flash-MusicPlayer/releases/download/v1.1.0/Jasmine.Music.Player-1.1.0-arm64-win.zip) | ZIP 便携版 |
+| Linux (ARM64) | [Jasmine.Music.Player-1.1.0-arm64.AppImage](https://github.com/Z1RO014011/opencode--DeepSeekV4-flash-MusicPlayer/releases/download/v1.1.0/Jasmine.Music.Player-1.1.0-arm64.AppImage) | AppImage 免安装 |
 
 > 下载后直接打开即可使用，首次打开 macOS 需在 **系统设置 → 隐私与安全性** 中点"仍要打开"。
 
