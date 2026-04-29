@@ -2023,6 +2023,7 @@
   overflow-y: auto;
   min-height: 0;
   padding: 60px 0;
+  scroll-behavior: smooth;
 }
 
 .nowplaying-lyrics-container::-webkit-scrollbar {

@@ -128,11 +128,13 @@ function parseLRC(lrcText: string): LyricLine[] {
     if (!trimmed || trimmed.startsWith('{')) continue;
     const match = trimmed.match(regex);
     if (match) {
+      const text = match[4].trim();
+      if (!text) continue;
       const min = parseInt(match[1], 10);
       const sec = parseInt(match[2], 10);
       const ms = parseInt(match[3].padEnd(3, '0'), 10);
       const time = min * 60 + sec + ms / 1000;
-      result.push({ time, text: match[4].trim() });
+      result.push({ time, text });
     }
   }
   result.sort((a, b) => a.time - b.time);

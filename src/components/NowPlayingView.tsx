@@ -18,6 +18,7 @@ export function NowPlayingView({ onBack }: NowPlayingViewProps) {
   const [editingLyrics, setEditingLyrics] = useState(false);
   const [lrcInput, setLrcInput] = useState('');
   const [draggingVolume, setDraggingVolume] = useState(false);
+  const [draggingProgress, setDraggingProgress] = useState(false);
   const [sharing, setSharing] = useState(false);
   const [shareImage, setShareImage] = useState<string | null>(null);
 
@@ -79,6 +80,37 @@ export function NowPlayingView({ onBack }: NowPlayingViewProps) {
     setDraggingVolume(true);
   }, [dispatch]);
 
+  useEffect(() => {
+    if (!draggingProgress) return;
+    const handleMove = (e: MouseEvent) => {
+      const el = progressRef.current;
+      if (!el || !duration) return;
+      const rect = el.getBoundingClientRect();
+      const pct = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
+      const time = pct * duration;
+      if (audioRef.current) audioRef.current.currentTime = time;
+      dispatch({ type: 'SEEK', time });
+    };
+    const handleUp = () => setDraggingProgress(false);
+    document.addEventListener('mousemove', handleMove);
+    document.addEventListener('mouseup', handleUp);
+    return () => {
+      document.removeEventListener('mousemove', handleMove);
+      document.removeEventListener('mouseup', handleUp);
+    };
+  }, [draggingProgress, duration, dispatch, audioRef]);
+
+  const handleProgressDown = useCallback((e: React.MouseEvent) => {
+    const el = progressRef.current;
+    if (!el || !duration) return;
+    const rect = el.getBoundingClientRect();
+    const pct = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
+    const time = pct * duration;
+    if (audioRef.current) audioRef.current.currentTime = time;
+    dispatch({ type: 'SEEK', time });
+    setDraggingProgress(true);
+  }, [duration, dispatch, audioRef]);
+
   const progressPct = duration > 0 ? (currentTime / duration) * 100 : 0;
 
   const bgStyle = useMemo(() => {
@@ -99,12 +131,12 @@ export function NowPlayingView({ onBack }: NowPlayingViewProps) {
   }, [lyrics, currentTime]);
 
   useEffect(() => {
-    if (currentLyricIndex < 0) return;
+    if (currentLyricIndex < 0 || !lyricsContainerRef.current) return;
     const el = lineRefs.current.get(currentLyricIndex);
     if (!el) return;
-    requestAnimationFrame(() => {
-      el.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    });
+    const container = lyricsContainerRef.current;
+    const top = el.offsetTop - container.clientHeight / 2 + el.clientHeight / 2;
+    container.scrollTo({ top, behavior: 'auto' });
   }, [currentLyricIndex]);
 
   const handleSaveLyrics = useCallback(() => {
@@ -237,7 +269,7 @@ export function NowPlayingView({ onBack }: NowPlayingViewProps) {
               </div>
 
               <div className="nowplaying-view-progress-section nowplaying-view-progress-mini">
-                <div className="nowplaying-view-progress" ref={progressRef} onClick={handleProgressClick}>
+                <div className="nowplaying-view-progress" ref={progressRef} onMouseDown={handleProgressDown}>
                   <div className="progress-track">
                     <div className="progress-fill" style={{ width: `${progressPct}%` }} />
                     <div className="progress-thumb" style={{ left: `${progressPct}%` }} />
@@ -310,7 +342,7 @@ export function NowPlayingView({ onBack }: NowPlayingViewProps) {
               </div>
 
               <div className="nowplaying-view-progress-section">
-                <div className="nowplaying-view-progress" ref={progressRef} onClick={handleProgressClick}>
+                <div className="nowplaying-view-progress" ref={progressRef} onMouseDown={handleProgressDown}>
                   <div className="progress-track">
                     <div className="progress-fill" style={{ width: `${progressPct}%` }} />
                     <div className="progress-thumb" style={{ left: `${progressPct}%` }} />

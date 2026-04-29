@@ -11,6 +11,7 @@ export function PlayerBar({ onOpenNowPlaying }: PlayerBarProps) {
   const progressRef = useRef<HTMLDivElement>(null);
   const volumeRef = useRef<HTMLDivElement>(null);
   const [draggingVolume, setDraggingVolume] = useState(false);
+  const [draggingProgress, setDraggingProgress] = useState(false);
 
   function formatTime(sec: number): string {
     if (isNaN(sec) || sec < 0) return '0:00';
@@ -63,6 +64,37 @@ export function PlayerBar({ onOpenNowPlaying }: PlayerBarProps) {
     dispatch({ type: 'SET_VOLUME', volume: pct });
     setDraggingVolume(true);
   }, [dispatch]);
+
+  useEffect(() => {
+    if (!draggingProgress) return;
+    const handleMove = (e: MouseEvent) => {
+      const el = progressRef.current;
+      if (!el || !duration) return;
+      const rect = el.getBoundingClientRect();
+      const pct = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
+      const time = pct * duration;
+      if (audioRef.current) audioRef.current.currentTime = time;
+      dispatch({ type: 'SEEK', time });
+    };
+    const handleUp = () => setDraggingProgress(false);
+    document.addEventListener('mousemove', handleMove);
+    document.addEventListener('mouseup', handleUp);
+    return () => {
+      document.removeEventListener('mousemove', handleMove);
+      document.removeEventListener('mouseup', handleUp);
+    };
+  }, [draggingProgress, duration, dispatch, audioRef]);
+
+  const handleProgressDown = useCallback((e: React.MouseEvent) => {
+    const el = progressRef.current;
+    if (!el || !duration) return;
+    const rect = el.getBoundingClientRect();
+    const pct = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
+    const time = pct * duration;
+    if (audioRef.current) audioRef.current.currentTime = time;
+    dispatch({ type: 'SEEK', time });
+    setDraggingProgress(true);
+  }, [duration, dispatch, audioRef]);
 
   const repeatIcons: Record<string, string> = {
     off: 'M4 4v7h7',
@@ -153,7 +185,7 @@ export function PlayerBar({ onOpenNowPlaying }: PlayerBarProps) {
 
         <div className="player-progress">
           <span className="player-time">{formatTime(currentTime)}</span>
-          <div className="progress-bar" ref={progressRef} onClick={handleProgressClick}>
+          <div className="progress-bar" ref={progressRef} onMouseDown={handleProgressDown}>
             <div className="progress-track">
               <div
                 className="progress-fill"
