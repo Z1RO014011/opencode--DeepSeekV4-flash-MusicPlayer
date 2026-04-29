@@ -129,13 +129,27 @@ export function NowPlayingView({ onBack }: NowPlayingViewProps) {
   }, [lyrics, currentTime]);
 
   const LINE_HEIGHT = 40.8;
-  const lyricsTranslateY = useMemo(() => {
-    if (currentLyricIndex < 0) return 0;
-    const containerH = lyricsContainerRef.current?.clientHeight || 480;
-    const center = containerH / 2;
-    const activeOffset = currentLyricIndex * LINE_HEIGHT + LINE_HEIGHT / 2;
-    return center - activeOffset;
-  }, [currentLyricIndex]);
+  const [containerHeight, setContainerHeight] = useState(0);
+
+  useEffect(() => {
+    if (!lyricsContainerRef.current) return;
+    const obs = new ResizeObserver(([entry]) => {
+      setContainerHeight(entry.contentRect.height);
+    });
+    obs.observe(lyricsContainerRef.current);
+    return () => obs.disconnect();
+  }, []);
+
+  const trackStyle = useMemo(() => {
+    if (currentLyricIndex < 0 || containerHeight === 0) return {};
+    const center = containerHeight / 2;
+    const offset = currentLyricIndex * LINE_HEIGHT + LINE_HEIGHT / 2;
+    const pad = center;
+    return {
+      transform: `translateY(${center - offset}px)`,
+      padding: `${pad}px 0`,
+    };
+  }, [currentLyricIndex, containerHeight]);
 
   const handleSaveLyrics = useCallback(() => {
     if (!currentSong || !lrcInput.trim()) return;
@@ -255,10 +269,7 @@ export function NowPlayingView({ onBack }: NowPlayingViewProps) {
               </div>
 
               <div className="nowplaying-lyrics-container" ref={lyricsContainerRef}>
-                <div
-                  className="nowplaying-lyrics-track"
-                  style={{ transform: `translateY(${lyricsTranslateY}px)` }}
-                >
+                <div className="nowplaying-lyrics-track" style={trackStyle}>
                   {lyrics.map((line, i) => (
                     <p
                       key={i}
