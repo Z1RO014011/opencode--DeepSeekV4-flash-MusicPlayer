@@ -12,12 +12,19 @@ export function NowPlayingView({ onBack }: NowPlayingViewProps) {
   const progressRef = useRef<HTMLDivElement>(null);
   const volumeRef = useRef<HTMLDivElement>(null);
   const lyricsContainerRef = useRef<HTMLDivElement>(null);
+  const lyricsDragRef = useRef<{ active: boolean; pointerId: number; startY: number; startScrollTop: number }>({
+    active: false,
+    pointerId: -1,
+    startY: 0,
+    startScrollTop: 0,
+  });
 
   const [showLyrics, setShowLyrics] = useState(() => (currentSong?.lyrics?.length ?? 0) > 0);
   const [editingLyrics, setEditingLyrics] = useState(false);
   const [lrcInput, setLrcInput] = useState('');
   const [draggingVolume, setDraggingVolume] = useState(false);
   const [draggingProgress, setDraggingProgress] = useState(false);
+  const [draggingLyrics, setDraggingLyrics] = useState(false);
   const [sharing, setSharing] = useState(false);
   const [shareImage, setShareImage] = useState<string | null>(null);
 
@@ -128,16 +135,48 @@ export function NowPlayingView({ onBack }: NowPlayingViewProps) {
     return -1;
   }, [lyrics, currentTime]);
 
-  const LINE_HEIGHT = 40.8;
-
-  useEffect(() => {
-    if (currentLyricIndex < 0) return;
+  const handleLyricsPointerDown = useCallback((e: React.PointerEvent<HTMLDivElement>) => {
     const container = lyricsContainerRef.current;
     if (!container) return;
-    const line = container.children[currentLyricIndex] as HTMLElement;
-    if (!line) return;
-    line.scrollIntoView({ block: 'center', behavior: 'smooth' });
-  }, [currentLyricIndex]);
+
+    // Left mouse button only; touch/pen can still use native scrolling.
+    if (e.pointerType === 'mouse' && e.button !== 0) return;
+    if (e.pointerType !== 'mouse') return;
+
+    lyricsDragRef.current = {
+      active: true,
+      pointerId: e.pointerId,
+      startY: e.clientY,
+      startScrollTop: container.scrollTop,
+    };
+    container.setPointerCapture(e.pointerId);
+    setDraggingLyrics(true);
+  }, []);
+
+  const handleLyricsPointerMove = useCallback((e: React.PointerEvent<HTMLDivElement>) => {
+    const container = lyricsContainerRef.current;
+    if (!container) return;
+    const drag = lyricsDragRef.current;
+    if (!drag.active || drag.pointerId !== e.pointerId) return;
+
+    const deltaY = drag.startY - e.clientY;
+    container.scrollTop = drag.startScrollTop + deltaY;
+  }, []);
+
+  const handleLyricsPointerUp = useCallback((e: React.PointerEvent<HTMLDivElement>) => {
+    const container = lyricsContainerRef.current;
+    const drag = lyricsDragRef.current;
+    if (!container) return;
+    if (!drag.active || drag.pointerId !== e.pointerId) return;
+
+    drag.active = false;
+    setDraggingLyrics(false);
+    try {
+      container.releasePointerCapture(e.pointerId);
+    } catch {
+      // ignore
+    }
+  }, []);
 
   const handleSaveLyrics = useCallback(() => {
     if (!currentSong || !lrcInput.trim()) return;
@@ -256,7 +295,14 @@ export function NowPlayingView({ onBack }: NowPlayingViewProps) {
                 <p className="nowplaying-view-artist nowplaying-view-artist-small">{currentSong.artist}</p>
               </div>
 
-              <div className="nowplaying-lyrics-container" ref={lyricsContainerRef}>
+              <div
+                className={`nowplaying-lyrics-container ${draggingLyrics ? 'dragging' : ''}`}
+                ref={lyricsContainerRef}
+                onPointerDown={handleLyricsPointerDown}
+                onPointerMove={handleLyricsPointerMove}
+                onPointerUp={handleLyricsPointerUp}
+                onPointerCancel={handleLyricsPointerUp}
+              >
                 {lyrics.map((line, i) => (
                   <p
                     key={i}

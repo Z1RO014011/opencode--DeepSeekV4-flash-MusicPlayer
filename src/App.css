@@ -2027,19 +2027,25 @@
   min-height: 0;
   padding: 60px 0;
   scroll-behavior: smooth;
+  overscroll-behavior: contain;
+  touch-action: pan-y;
+  cursor: grab;
 }
 
-.nowplaying-lyrics-container::-webkit-scrollbar {
-  display: none;
+.nowplaying-lyrics-container.dragging {
+  cursor: grabbing;
+  user-select: none;
 }
 
 .nowplaying-lyric-line {
+  margin: 0;
   font-size: 17px;
   line-height: 2.4;
   color: rgba(255, 255, 255, 0.3);
-  transition: color 0.25s, font-size 0.25s, font-weight 0.25s, opacity 0.25s;
+  transition: color 0.25s, transform 0.25s, font-weight 0.25s, opacity 0.25s;
   padding: 0 4px;
   cursor: default;
+  transform-origin: left center;
 }
 
 .nowplaying-lyric-line.past {
@@ -2048,7 +2054,7 @@
 
 .nowplaying-lyric-line.active {
   color: #1ed760;
-  font-size: 22px;
+  transform: scale(1.16);
   font-weight: 700;
   text-shadow: 0 0 12px rgba(30, 215, 96, 0.3);
 }
