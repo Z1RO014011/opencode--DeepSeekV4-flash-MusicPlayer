@@ -1,5 +1,7 @@
 # 🎵 Jasmine Music Player
 
+[English](README_EN.md) | 中文
+
 Spotify 风格的全功能 Web 音乐播放器，基于 **Vite + React 18 + TypeScript + Electron** 构建。
 
 ## ✨ 功能
