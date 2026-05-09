@@ -285,7 +285,12 @@ export function NowPlayingView({ onBack }: NowPlayingViewProps) {
         /* ── NORMAL MODE ── */
         <div className="nowplaying-view-inner">
           <div className="nowplaying-view-left">
-            <div className="nowplaying-view-cover">
+            <div
+              className="nowplaying-view-cover"
+              onClick={() => { if (hasLyrics) setShowLyrics(true); }}
+              title={hasLyrics ? t('np.clickForLyrics') : t('np.addLyrics')}
+              style={hasLyrics ? { cursor: 'pointer' } : undefined}
+            >
               <div
                 className="nowplaying-view-cover-art"
                 style={{
@@ -297,6 +302,7 @@ export function NowPlayingView({ onBack }: NowPlayingViewProps) {
                 }}
               />
               <div className="nowplaying-view-cover-ring" />
+              {hasLyrics && <div className="np-lyrics-cover-hint">{t('np.clickForLyrics')}</div>}
             </div>
           </div>
 

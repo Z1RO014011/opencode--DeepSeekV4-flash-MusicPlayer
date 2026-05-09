@@ -95,6 +95,7 @@ const zh: TranslationMap = {
   // NowPlaying
   'np.noSong': '未选择歌曲',
   'np.clickToReturn': '点击返回',
+  'np.clickForLyrics': '点击查看歌词',
   'np.editLyrics': '编辑歌词',
   'np.hideLyrics': '隐藏歌词',
   'np.showLyrics': '显示歌词',
@@ -226,6 +227,7 @@ const en: TranslationMap = {
   // NowPlaying
   'np.noSong': 'No track selected',
   'np.clickToReturn': 'Click to return',
+  'np.clickForLyrics': 'Click for lyrics',
   'np.editLyrics': 'Edit Lyrics',
   'np.hideLyrics': 'Hide Lyrics',
   'np.showLyrics': 'Show Lyrics',

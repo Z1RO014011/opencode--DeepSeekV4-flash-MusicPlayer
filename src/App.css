@@ -2160,7 +2160,8 @@
   transition: all 0.25s;
 }
 
-.np-lyrics-left .nowplaying-view-cover:hover .np-lyrics-cover-hint {
+.np-lyrics-left .nowplaying-view-cover:hover .np-lyrics-cover-hint,
+.nowplaying-view-left .nowplaying-view-cover:hover .np-lyrics-cover-hint {
   color: rgba(255,255,255,0.8);
   background: rgba(0,0,0,0.45);
   backdrop-filter: blur(2px);
