@@ -230,6 +230,19 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
     savePlaylists(userPlaylists);
   }, [userPlaylists, loaded]);
 
+  // Update liked playlist name when language changes
+  useEffect(() => {
+    if (!loaded) return;
+    setUserPlaylists(prev =>
+      prev.map(pl =>
+        pl.id === LIKED_PLAYLIST_ID
+          ? { ...pl, name: t('default.likedPlaylistName'), description: t('default.likedPlaylistDesc') }
+          : pl
+      )
+    );
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [t]);
+
   useEffect(() => {
     const audio = new Audio();
     audio.volume = state.volume;

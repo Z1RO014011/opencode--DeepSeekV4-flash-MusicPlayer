@@ -22,7 +22,7 @@ export function PlaylistDetail({ playlist, onBack }: PlaylistDetailProps) {
   function formatDuration(seconds: number): string {
     const h = Math.floor(seconds / 3600);
     const m = Math.floor((seconds % 3600) / 60);
-    return h > 0 ? t('common.durationHours', { hours: h, minutes: m }) : t('common.durationMinutes', { minutes: m });
+    return h > 0 ? t('common.durationHours', { h, m }) : t('common.durationMinutes', { m });
   }
 
   const totalDuration = playlist.songs.reduce((acc, s) => acc + s.duration, 0);
