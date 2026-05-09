@@ -97,9 +97,9 @@ export function PlayerBar({ onOpenNowPlaying }: PlayerBarProps) {
   }, [duration, dispatch, audioRef]);
 
   const repeatIcons: Record<string, string> = {
-    off: 'M4 4v7h7',
-    all: 'M4 4v7h7M4 11l3-3m4 6v7h-7M4 18l3 3M20 4v7h-7M13 1l3 3-3 3M20 11v7h-7M13 15l3 3-3 3',
-    one: 'M4 4v7h7M4 11l3-3m4 6v7h-7M4 18l3 3M20 4v7h-7M13 1l3 3-3 3M20 18a2 2 0 110-4 2 2 0 010 4z',
+    off: 'm17 2 4 4-4 4 M3 11v-1a4 4 0 0 1 4-4h14 m-14 16-4-4 4-4 M21 13v1a4 4 0 0 1-4 4H3',
+    all: 'm17 2 4 4-4 4 M3 11v-1a4 4 0 0 1 4-4h14 m-14 16-4-4 4-4 M21 13v1a4 4 0 0 1-4 4H3',
+    one: 'm17 2 4 4-4 4 M3 11v-1a4 4 0 0 1 4-4h14 m-14 16-4-4 4-4 M21 13v1a4 4 0 0 1-4 4H3 M11 10h1v4',
   };
 
   return (
@@ -142,8 +142,12 @@ export function PlayerBar({ onOpenNowPlaying }: PlayerBarProps) {
             onClick={() => dispatch({ type: 'TOGGLE_SHUFFLE' })}
             title="随机播放"
           >
-            <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
-              <path d="M13.151.922a.75.75 0 10-1.06 1.06L13.17 3.06H11.5A10.5 10.5 0 001 13.5v.1a.75.75 0 001.5 0v-.1a9 9 0 019-9h1.67l-1.08 1.078a.75.75 0 101.06 1.06L16.29 3.11a.75.75 0 000-1.06L13.151.922z"/>
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="m18 14 4 4-4 4" />
+              <path d="m18 2 4 4-4 4" />
+              <path d="M2 18h1.973a4 4 0 0 0 3.3-1.7l5.454-8.6a4 4 0 0 1 3.3-1.7H22" />
+              <path d="M2 6h1.972a4 4 0 0 1 3.6 2.2" />
+              <path d="M22 18h-6.041a4 4 0 0 1-3.3-1.8l-.359-.45" />
             </svg>
           </button>
           <button className="player-control-btn" onClick={prevTrack} title="上一首">
@@ -176,11 +180,10 @@ export function PlayerBar({ onOpenNowPlaying }: PlayerBarProps) {
             onClick={() => dispatch({ type: 'CYCLE_REPEAT' })}
             title={`重复: ${repeatMode === 'off' ? '关闭' : repeatMode === 'all' ? '全部循环' : '单曲循环'}`}
           >
-            <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <path d={repeatIcons[repeatMode]} />
             </svg>
-            {repeatMode === 'one' && <span className="repeat-one-indicator">1</span>}
-          </button>
+                      </button>
         </div>
 
         <div className="player-progress">
@@ -204,7 +207,7 @@ export function PlayerBar({ onOpenNowPlaying }: PlayerBarProps) {
       <div className="player-right">
         <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" className="volume-icon">
           <path d={volume === 0
-            ? "M1 8v8h4l5.7 5.3a1 1 0 001.3 0V2.7a1 1 0 00-1.3 0L5 8H1zm16.5 4a4.5 4.5 0 01-2.12 3.82.75.75 0 00.74 1.3 6 6 0 000-10.24.75.75 0 10-.74 1.3A4.5 4.5 0 0117.5 12z"
+            ? "M1 8v8h4l5.7 5.3a1 1 0 001.3 0V2.7a1 1 0 00-1.3 0L5 8H1z"
             : volume < 0.5
               ? "M1 8v8h4l5.7 5.3a1 1 0 001.3 0V2.7a1 1 0 00-1.3 0L5 8H1zm13.5 4a4.5 4.5 0 01-2.12 3.82.75.75 0 00.74 1.3 6 6 0 000-10.24.75.75 0 10-.74 1.3A4.5 4.5 0 0114.5 12z"
               : "M1 8v8h4l5.7 5.3a1 1 0 001.3 0V2.7a1 1 0 00-1.3 0L5 8H1zm13.5 4a4.5 4.5 0 01-2.12 3.82.75.75 0 00.74 1.3 6 6 0 000-10.24.75.75 0 10-.74 1.3A4.5 4.5 0 0114.5 12zm4.14-5.85a.75.75 0 10-.78 1.28A4.5 4.5 0 0119.5 12a4.5 4.5 0 01-1.64 3.43.75.75 0 00.78 1.28A6 6 0 0021 12a6 6 0 00-2.36-4.85z"

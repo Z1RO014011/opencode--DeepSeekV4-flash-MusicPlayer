@@ -1,7 +1,7 @@
 {
   "name": "jasmine-music-player",
   "private": true,
-  "version": "1.1.1",
+  "version": "1.2.0",
   "type": "module",
   "description": "Jasmine Music Player - Spotify-style music player built with React",
   "author": "Z1RO014011 <zhr014011@outlook.com>",
@@ -46,6 +46,7 @@
     }
   },
   "dependencies": {
+    "music-metadata": "^11.12.3",
     "react": "^18.3.1",
     "react-dom": "^18.3.1"
   },

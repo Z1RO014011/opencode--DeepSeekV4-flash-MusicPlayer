@@ -903,14 +903,6 @@
   background: var(--accent-hover);
 }
 
-.repeat-one-indicator {
-  position: absolute;
-  top: -4px;
-  right: -4px;
-  font-size: 8px;
-  font-weight: 700;
-}
-
 .player-progress {
   display: flex;
   align-items: center;
@@ -1704,14 +1696,6 @@
   background: #fff;
 }
 
-.np-repeat-one {
-  position: absolute;
-  top: -2px;
-  right: -2px;
-  font-size: 8px;
-  font-weight: 700;
-}
-
 .nowplaying-volume-section {
   display: flex;
   align-items: center;
@@ -2000,7 +1984,7 @@
   color: var(--accent);
 }
 
-.nowplaying-lyrics-section {
+.np-lyrics-section {
   flex: 1;
   display: flex;
   flex-direction: column;
@@ -2013,50 +1997,50 @@
 }
 
 .nowplaying-view-title-small {
-  font-size: 22px !important;
+  font-size: 22px;
 }
 
 .nowplaying-view-artist-small {
-  font-size: 14px !important;
+  font-size: 14px;
 }
 
-.nowplaying-lyrics-container {
+.np-lyrics-container {
   position: relative;
   flex: 1;
   overflow-y: auto;
   min-height: 0;
   padding: 60px 0;
-  scroll-behavior: smooth;
   overscroll-behavior: contain;
   touch-action: pan-y;
   cursor: grab;
 }
 
-.nowplaying-lyrics-container.dragging {
+.np-lyrics-container.dragging {
   cursor: grabbing;
   user-select: none;
 }
 
-.nowplaying-lyric-line {
+.np-lyric-line {
   margin: 0;
   font-size: 17px;
   line-height: 2.4;
   color: rgba(255, 255, 255, 0.3);
   transition: color 0.25s, transform 0.25s, font-weight 0.25s, opacity 0.25s;
   padding: 0 4px;
-  cursor: default;
+  cursor: pointer;
   transform-origin: left center;
 }
 
-.nowplaying-lyric-line.past {
+.np-lyric-line.past {
   color: rgba(255, 255, 255, 0.45);
 }
 
-.nowplaying-lyric-line.active {
+.np-lyric-line.active {
   color: #1ed760;
   transform: scale(1.16);
   font-weight: 700;
   text-shadow: 0 0 12px rgba(30, 215, 96, 0.3);
+  cursor: default;
 }
 
 .nowplaying-view-progress-mini {
@@ -2071,6 +2055,178 @@
 .nowplaying-view-controls-mini .nowplaying-view-play {
   width: 40px;
   height: 40px;
+}
+
+/* ============ APPLE MUSIC LYRICS ============ */
+
+.am-lyrics-container {
+  flex: 1;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: none;
+  mask-image: linear-gradient(
+    to bottom,
+    transparent 0%,
+    rgba(0,0,0,1) 15%,
+    rgba(0,0,0,1) 85%,
+    transparent 100%
+  );
+  -webkit-mask-image: linear-gradient(
+    to bottom,
+    transparent 0%,
+    rgba(0,0,0,1) 15%,
+    rgba(0,0,0,1) 85%,
+    transparent 100%
+  );
+}
+
+.am-lyrics-container::-webkit-scrollbar {
+  display: none;
+}
+
+.am-lyrics-spacer {
+  height: 40vh;
+  flex-shrink: 0;
+}
+
+.am-lyric-line {
+  padding: 10px 18px;
+  margin: 1px 0;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background 0.2s;
+  user-select: none;
+}
+
+.am-lyric-line:hover {
+  background: rgba(255,255,255,0.06);
+}
+
+.am-lyric-text {
+  display: block;
+  font-size: 30px;
+  font-weight: 600;
+  line-height: 1.4;
+  color: rgba(255,255,255,0.25);
+  transform-origin: left center;
+  transform: scale(0.92);
+  transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.am-lyric-line.active .am-lyric-text {
+  color: #fff;
+  opacity: 1;
+  transform: scale(1);
+}
+
+/* ============ LYRICS MODE LAYOUT ============ */
+
+.np-lyrics-mode-layout {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  width: 100%;
+  height: 100%;
+  padding: 20px 40px 40px;
+  gap: 48px;
+}
+
+.np-lyrics-left {
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  width: 320px;
+}
+
+.np-lyrics-left .nowplaying-view-cover {
+  width: 240px;
+  height: 240px;
+  cursor: pointer;
+}
+
+.np-lyrics-cover-hint {
+  position: absolute;
+  inset: 0;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  color: rgba(255,255,255,0);
+  border-radius: 12px;
+  transition: all 0.25s;
+}
+
+.np-lyrics-left .nowplaying-view-cover:hover .np-lyrics-cover-hint {
+  color: rgba(255,255,255,0.8);
+  background: rgba(0,0,0,0.45);
+  backdrop-filter: blur(2px);
+}
+
+.np-lyrics-left .np-lyrics-info {
+  text-align: center;
+  min-width: 0;
+}
+
+.np-lyrics-left .np-lyrics-title {
+  font-size: 20px;
+  font-weight: 700;
+  color: #fff;
+  margin: 0 0 4px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.np-lyrics-left .np-lyrics-artist {
+  font-size: 14px;
+  color: rgba(255,255,255,0.5);
+  margin: 0;
+}
+
+.np-lyrics-left .np-lyrics-controls-section {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  align-items: center;
+}
+
+.np-lyrics-left .np-lyrics-progress {
+  width: 100%;
+}
+
+.np-lyrics-left .np-lyrics-time {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  color: rgba(255,255,255,0.4);
+  margin-top: 6px;
+}
+
+.np-lyrics-left .np-lyrics-ctrls {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.np-lyrics-right {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.np-lyrics-right-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  padding-bottom: 12px;
+  flex-shrink: 0;
 }
 
 /* ============ LYRICS EDITOR ============ */

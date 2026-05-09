@@ -2,6 +2,7 @@ import React, { createContext, useContext, useReducer, useRef, useCallback, useE
 import { PlayerState, Song, Playlist, LyricLine } from '../types';
 import { gradientColors } from '../data';
 import { saveAudioFile, loadAudioFile, deleteAudioFile, saveSongs, loadSongs, savePlaylists, loadPlaylists } from '../lib/db';
+import { extractMetadata } from '../lib/metadata';
 
 type PlayerAction =
   | { type: 'PLAY_SONG'; song: Song; playlist?: Playlist }
@@ -119,27 +120,7 @@ function nextColor(): string {
   return c;
 }
 
-function parseLRC(lrcText: string): LyricLine[] {
-  const lines = lrcText.split('\n');
-  const result: LyricLine[] = [];
-  const regex = /\[(\d{2}):(\d{2})\.(\d{2,3})\](.*)/;
-  for (const line of lines) {
-    const trimmed = line.trim();
-    if (!trimmed || trimmed.startsWith('{')) continue;
-    const match = trimmed.match(regex);
-    if (match) {
-      const text = match[4].trim();
-      if (!text) continue;
-      const min = parseInt(match[1], 10);
-      const sec = parseInt(match[2], 10);
-      const ms = parseInt(match[3].padEnd(3, '0'), 10);
-      const time = min * 60 + sec + ms / 1000;
-      result.push({ time, text });
-    }
-  }
-  result.sort((a, b) => a.time - b.time);
-  return result;
-}
+import { parseLRC } from '../lib/lyrics';
 
 export const LIKED_PLAYLIST_ID = '__liked__';
 
@@ -417,19 +398,45 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
     const newSongs: Song[] = [];
     const fileArray = Array.from(files);
 
-    for (const file of fileArray) {
+    // Separate audio files and LRC files
+    const audioFiles = fileArray.filter(f => !f.name.endsWith('.lrc'));
+    const lrcFiles = fileArray.filter(f => f.name.endsWith('.lrc'));
+
+    // Parse LRC files and build a basename → lyrics map
+    const lrcMap = new Map<string, LyricLine[]>();
+    for (const lrcFile of lrcFiles) {
+      const baseName = lrcFile.name.replace(/\.lrc$/i, '');
+      try {
+        const text = await lrcFile.text();
+        const parsed = parseLRC(text);
+        if (parsed.length > 0) {
+          lrcMap.set(baseName, parsed);
+        }
+      } catch {
+        // skip unreadable LRC files
+      }
+    }
+
+    for (const file of audioFiles) {
       const id = `song-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
       await saveAudioFile(id, file);
       const loaded = await loadAudioFile(id);
       const duration = await getAudioDuration(loaded!.url);
+      const meta = await extractMetadata(file);
+      const baseName = file.name.replace(/\.[^/.]+$/, '');
+      const matchedLyrics = lrcMap.get(baseName);
+      const coverColor = meta.coverDataUrl
+        ? `url(${meta.coverDataUrl}) center/cover no-repeat`
+        : nextColor();
       const song: Song = {
         id,
-        title: file.name.replace(/\.[^/.]+$/, ''),
-        artist: '未知艺术家',
-        album: '未知专辑',
+        title: meta.title || baseName,
+        artist: meta.artist || '未知艺术家',
+        album: meta.album || '未知专辑',
         duration: Math.floor(duration),
-        coverColor: nextColor(),
+        coverColor,
         audioUrl: loaded?.url,
+        lyrics: matchedLyrics,
       };
       newSongs.push(song);
     }
@@ -444,6 +451,10 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
   const deleteSong = useCallback((songId: string) => {
     deleteAudioFile(songId);
     setUserSongs(prev => {
+      const deleted = prev.find(s => s.id === songId);
+      if (deleted?.audioUrl?.startsWith('blob:')) {
+        URL.revokeObjectURL(deleted.audioUrl);
+      }
       const next = prev.filter(s => s.id !== songId);
       saveSongs(next);
       return next;
@@ -571,6 +582,7 @@ function getAudioDuration(url: string): Promise<number> {
     const cleanup = () => {
       audio.removeEventListener('loadedmetadata', onLoaded);
       audio.removeEventListener('error', onError);
+      audio.src = '';
     };
     audio.addEventListener('loadedmetadata', onLoaded);
     audio.addEventListener('error', onError);

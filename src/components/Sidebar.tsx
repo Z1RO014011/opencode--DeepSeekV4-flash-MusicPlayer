@@ -80,7 +80,7 @@ export function Sidebar({ currentView, onViewChange, onSelectPlaylist, collapsed
       <input
         id="import-audio-input"
         type="file"
-        accept="audio/*"
+        accept="audio/*,.lrc"
         multiple
         onChange={handleImport}
         style={{ display: 'none' }}
