@@ -24,7 +24,7 @@ export interface Playlist {
   creator?: string;
 }
 
-export type ViewType = 'home' | 'search' | 'library' | 'playlist' | 'nowplaying';
+export type ViewType = 'home' | 'search' | 'library' | 'playlist' | 'nowplaying' | 'settings';
 
 export interface PlayerState {
   currentSong: Song | null;

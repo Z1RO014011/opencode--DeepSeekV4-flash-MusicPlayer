@@ -3,6 +3,7 @@ import { PlayerState, Song, Playlist, LyricLine } from '../types';
 import { gradientColors } from '../data';
 import { saveAudioFile, loadAudioFile, deleteAudioFile, saveSongs, loadSongs, savePlaylists, loadPlaylists } from '../lib/db';
 import { extractMetadata } from '../lib/metadata';
+import { useI18n } from '../i18n/I18nContext';
 
 type PlayerAction =
   | { type: 'PLAY_SONG'; song: Song; playlist?: Playlist }
@@ -158,6 +159,7 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
   const [userSongs, setUserSongs] = useState<Song[]>([]);
   const [userPlaylists, setUserPlaylists] = useState<Playlist[]>([]);
   const [loaded, setLoaded] = useState(false);
+  const { t } = useI18n();
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const stateRef = useRef(state);
   const loadedRef = useRef(false);
@@ -208,8 +210,8 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
       if (!likedExists) {
         pls.unshift({
           id: LIKED_PLAYLIST_ID,
-          name: '我喜欢的音乐',
-          description: '收藏你喜欢的歌曲',
+          name: t('default.likedPlaylistName'),
+          description: t('default.likedPlaylistDesc'),
           coverColor: 'linear-gradient(135deg, #e23b3b 0%, #ff6b6b 100%)',
           songs: [],
           createdAt: 0,
@@ -427,8 +429,8 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
       const song: Song = {
         id,
         title: meta.title || baseName,
-        artist: meta.artist || '未知艺术家',
-        album: meta.album || '未知专辑',
+        artist: meta.artist || t('default.unknownArtist'),
+        album: meta.album || t('default.unknownAlbum'),
         duration: Math.floor(duration),
         coverColor,
         audioUrl: loaded?.url,
@@ -467,7 +469,7 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
     const playlist: Playlist = {
       id: `pl-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
       name: data.name,
-      description: data.description || `${data.name} · 自建歌单`,
+      description: data.description || t('default.playlistDescription', { name: data.name }),
       coverColor: data.coverColor || nextColor(),
       songs: [],
       createdAt: Date.now(),
@@ -483,7 +485,7 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
 
   const renamePlaylist = useCallback((playlistId: string, name: string) => {
     setUserPlaylists(prev =>
-      prev.map(pl => pl.id === playlistId ? { ...pl, name, description: `${name} · 自建歌单` } : pl)
+      prev.map(pl => pl.id === playlistId ? { ...pl, name, description: t('default.playlistDescription', { name }) } : pl)
     );
   }, []);
 

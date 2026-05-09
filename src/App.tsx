@@ -1,5 +1,6 @@
 import React, { useState, useCallback, useRef, useMemo } from 'react';
 import { ViewType, Playlist } from './types';
+import { I18nProvider } from './i18n/I18nContext';
 import { PlayerProvider, usePlayer } from './context/PlayerContext';
 import { Sidebar } from './components/Sidebar';
 import { PlayerBar } from './components/PlayerBar';
@@ -8,6 +9,7 @@ import { SearchView } from './components/SearchView';
 import { LibraryView } from './components/LibraryView';
 import { PlaylistDetail } from './components/PlaylistDetail';
 import { NowPlayingView } from './components/NowPlayingView';
+import { SettingsView } from './components/SettingsView';
 import { useKeyboardShortcuts } from './hooks/useKeyboardShortcuts';
 import './App.css';
 
@@ -84,6 +86,8 @@ function AppContent() {
         return <SearchView onSelectPlaylist={handleSelectPlaylist} />;
       case 'library':
         return <LibraryView onSelectPlaylist={handleSelectPlaylist} />;
+      case 'settings':
+        return <SettingsView />;
       case 'playlist':
         if (selectedPlaylist) {
           return (
@@ -128,8 +132,10 @@ function AppContent() {
 
 export default function App() {
   return (
-    <PlayerProvider>
-      <AppContent />
-    </PlayerProvider>
+    <I18nProvider>
+      <PlayerProvider>
+        <AppContent />
+      </PlayerProvider>
+    </I18nProvider>
   );
 }

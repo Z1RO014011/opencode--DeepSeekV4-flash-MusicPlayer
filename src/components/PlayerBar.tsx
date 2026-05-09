@@ -1,5 +1,6 @@
 import React, { useRef, useCallback, useState, useEffect } from 'react';
 import { usePlayer } from '../context/PlayerContext';
+import { useI18n } from '../i18n/I18nContext';
 
 interface PlayerBarProps {
   onOpenNowPlaying?: () => void;
@@ -7,6 +8,7 @@ interface PlayerBarProps {
 
 export function PlayerBar({ onOpenNowPlaying }: PlayerBarProps) {
   const { state, dispatch, togglePlay, nextTrack, prevTrack, audioRef, isLiked, toggleLike } = usePlayer();
+  const { t } = useI18n();
   const { currentSong, isPlaying, currentTime, duration, volume, isShuffled, repeatMode } = state;
   const progressRef = useRef<HTMLDivElement>(null);
   const volumeRef = useRef<HTMLDivElement>(null);
@@ -117,7 +119,7 @@ export function PlayerBar({ onOpenNowPlaying }: PlayerBarProps) {
             <button
               className={`like-btn player-like-btn ${isLiked(currentSong.id) ? 'liked' : ''}`}
               onClick={() => toggleLike(currentSong)}
-              title={isLiked(currentSong.id) ? '取消喜欢' : '喜欢'}
+              title={isLiked(currentSong.id) ? t('player.unlike') : t('player.like')}
             >
               <svg viewBox="0 0 24 24" width="16" height="16" fill={isLiked(currentSong.id) ? 'currentColor' : 'none'} stroke="currentColor" strokeWidth="2">
                 <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
@@ -128,8 +130,8 @@ export function PlayerBar({ onOpenNowPlaying }: PlayerBarProps) {
           <div className="player-current-song">
             <div className="player-cover player-cover-empty" />
             <div className="player-song-info">
-              <div className="player-song-title player-muted">未选择歌曲</div>
-              <div className="player-song-artist player-muted">选择一首歌开始播放</div>
+              <div className="player-song-title player-muted">{t('player.noSong')}</div>
+              <div className="player-song-artist player-muted">{t('player.selectSong')}</div>
             </div>
           </div>
         )}
@@ -140,7 +142,7 @@ export function PlayerBar({ onOpenNowPlaying }: PlayerBarProps) {
           <button
             className={`player-control-btn ${isShuffled ? 'active' : ''}`}
             onClick={() => dispatch({ type: 'TOGGLE_SHUFFLE' })}
-            title="随机播放"
+            title={t('player.shuffle')}
           >
             <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <path d="m18 14 4 4-4 4" />
@@ -150,7 +152,7 @@ export function PlayerBar({ onOpenNowPlaying }: PlayerBarProps) {
               <path d="M22 18h-6.041a4 4 0 0 1-3.3-1.8l-.359-.45" />
             </svg>
           </button>
-          <button className="player-control-btn" onClick={prevTrack} title="上一首">
+          <button className="player-control-btn" onClick={prevTrack} title={t('player.previous')}>
             <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
               <path d="M6 4h2v16H6V4zm12.49-.323l-12 8.485a1 1 0 000 1.676l12 8.485A1 1 0 0022 21.485V2.515a1 1 0 00-1.51-.838z"/>
             </svg>
@@ -158,7 +160,7 @@ export function PlayerBar({ onOpenNowPlaying }: PlayerBarProps) {
           <button
             className="player-play-btn"
             onClick={() => currentSong && togglePlay()}
-            title={isPlaying ? '暂停' : '播放'}
+            title={isPlaying ? t('action.pause') : t('action.play')}
           >
             {isPlaying ? (
               <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor">
@@ -170,7 +172,7 @@ export function PlayerBar({ onOpenNowPlaying }: PlayerBarProps) {
               </svg>
             )}
           </button>
-          <button className="player-control-btn" onClick={nextTrack} title="下一首">
+          <button className="player-control-btn" onClick={nextTrack} title={t('player.next')}>
             <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
               <path d="M5.51 2.323l12 8.485a1 1 0 010 1.676l-12 8.485A1 1 0 014 20.485V3.515a1 1 0 011.51-.838zM18 4h2v16h-2V4z"/>
             </svg>
@@ -178,7 +180,7 @@ export function PlayerBar({ onOpenNowPlaying }: PlayerBarProps) {
           <button
             className={`player-control-btn ${repeatMode !== 'off' ? 'active' : ''}`}
             onClick={() => dispatch({ type: 'CYCLE_REPEAT' })}
-            title={`重复: ${repeatMode === 'off' ? '关闭' : repeatMode === 'all' ? '全部循环' : '单曲循环'}`}
+            title={`${t('player.repeat')}: ${repeatMode === 'off' ? t('player.repeatOff') : repeatMode === 'all' ? t('player.repeatAll') : t('player.repeatOne')}`}
           >
             <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <path d={repeatIcons[repeatMode]} />

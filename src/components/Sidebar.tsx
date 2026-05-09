@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { ViewType, Playlist } from '../types';
 import { usePlayer } from '../context/PlayerContext';
+import { useI18n } from '../i18n/I18nContext';
 import { CreatePlaylistModal } from './CreatePlaylistModal';
 
 interface SidebarProps {
@@ -12,6 +13,7 @@ interface SidebarProps {
 
 export function Sidebar({ currentView, onViewChange, onSelectPlaylist, collapsed }: SidebarProps) {
   const { userPlaylists, createPlaylist, importFiles } = usePlayer();
+  const { t } = useI18n();
   const [showModal, setShowModal] = useState(false);
 
   function handleImport(e: React.ChangeEvent<HTMLInputElement>) {
@@ -38,7 +40,7 @@ export function Sidebar({ currentView, onViewChange, onSelectPlaylist, collapsed
           <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor">
             <path d="M12.5 3.247a1 1 0 00-1 0L4 7.577V20h4.5v-6a1.5 1.5 0 013 0v6H20V7.577l-7.5-4.33zm-2-1.732a3 3 0 013 0l7.5 4.33a2 2 0 011 1.732V21a1 1 0 01-1 1h-6.5a1 1 0 01-1-1v-6h-1v6a1 1 0 01-1 1H3a1 1 0 01-1-1V7.577a2 2 0 011-1.732l7.5-4.33z"/>
           </svg>
-          {!collapsed && <span>首页</span>}
+          {!collapsed && <span>{t('nav.home')}</span>}
         </button>
         <button
           className={`sidebar-nav-item ${currentView === 'search' ? 'active' : ''}`}
@@ -47,7 +49,7 @@ export function Sidebar({ currentView, onViewChange, onSelectPlaylist, collapsed
           <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor">
             <path d="M10.533 1.279c-5.18 0-9.407 4.14-9.407 9.279s4.226 9.279 9.407 9.279c2.234 0 4.29-.77 5.907-2.057l4.42 4.42a1 1 0 101.415-1.414l-4.42-4.42a9.18 9.18 0 002.092-5.808c0-5.14-4.226-9.28-9.414-9.28zm0 2c4.115 0 7.407 3.274 7.407 7.279 0 4.005-3.292 7.279-7.407 7.279-4.115 0-7.407-3.274-7.407-7.279 0-4.005 3.292-7.279 7.407-7.279z"/>
           </svg>
-          {!collapsed && <span>搜索</span>}
+          {!collapsed && <span>{t('nav.search')}</span>}
         </button>
         <button
           className={`sidebar-nav-item ${currentView === 'library' ? 'active' : ''}`}
@@ -56,7 +58,16 @@ export function Sidebar({ currentView, onViewChange, onSelectPlaylist, collapsed
           <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor">
             <path d="M14.5 2.134a1 1 0 011 0l6 3.464a1 1 0 01.5.866V21a1 1 0 01-1 1h-6a1 1 0 01-1-1V3a1 1 0 01.5-.866zM16 4.732V20h4V7.041l-4-2.309zM3 22a1 1 0 01-1-1V3a1 1 0 012 0v18a1 1 0 01-1 1zm5 0a1 1 0 01-1-1V3a1 1 0 012 0v18a1 1 0 01-1 1z"/>
           </svg>
-          {!collapsed && <span>音乐库</span>}
+          {!collapsed && <span>{t('nav.library')}</span>}
+        </button>
+        <button
+          className={`sidebar-nav-item ${currentView === 'settings' ? 'active' : ''}`}
+          onClick={() => onViewChange('settings')}
+        >
+          <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor">
+            <path d="M12 15.5A3.5 3.5 0 0115.5 12 3.5 3.5 0 0112 8.5 3.5 3.5 0 018.5 12 3.5 3.5 0 0112 15.5zm7.43-2.53c.04-.32.07-.64.07-.97 0-.33-.03-.66-.07-.98l2.11-1.65c.19-.15.24-.42.12-.64l-2-3.46c-.12-.22-.39-.3-.61-.22l-2.49 1c-.52-.4-1.08-.73-1.69-.98l-.38-2.65A.488.488 0 0014 2h-4c-.25 0-.46.18-.49.42l-.38 2.65c-.61.25-1.17.59-1.69.98l-2.49-1c-.23-.09-.49 0-.61.22l-2 3.46c-.13.22-.07.49.12.64l2.11 1.65c-.04.32-.07.65-.07.98 0 .33.03.66.07.97l-2.11 1.66c-.19.15-.24.42-.12.64l2 3.46c.12.22.39.3.61.22l2.49-1c.52.4 1.08.73 1.69.98l.38 2.65c.03.24.24.42.49.42h4c.25 0 .46-.18.49-.42l.38-2.65c.61-.25 1.17-.59 1.69-.98l2.49 1c.23.09.49 0 .61-.22l2-3.46c.12-.22.07-.49-.12-.64l-2.11-1.66z"/>
+          </svg>
+          {!collapsed && <span>{t('nav.settings')}</span>}
         </button>
       </nav>
 
@@ -67,13 +78,13 @@ export function Sidebar({ currentView, onViewChange, onSelectPlaylist, collapsed
           <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
             <path d="M12 3a1 1 0 011 1v7h7a1 1 0 110 2h-7v7a1 1 0 11-2 0v-7H4a1 1 0 110-2h7V4a1 1 0 011-1z"/>
           </svg>
-          {!collapsed && <span>导入音乐</span>}
+          {!collapsed && <span>{t('action.importMusic')}</span>}
         </button>
         <button className="sidebar-action-btn" onClick={() => setShowModal(true)}>
           <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
             <path d="M12 3a1 1 0 011 1v7h7a1 1 0 110 2h-7v7a1 1 0 11-2 0v-7H4a1 1 0 110-2h7V4a1 1 0 011-1z"/>
           </svg>
-          {!collapsed && <span>创建歌单</span>}
+          {!collapsed && <span>{t('action.createPlaylist')}</span>}
         </button>
       </div>
 
@@ -87,12 +98,12 @@ export function Sidebar({ currentView, onViewChange, onSelectPlaylist, collapsed
       />
 
       {!collapsed && (
-        <div className="sidebar-section-title">你的歌单</div>
+        <div className="sidebar-section-title">{t('sidebar.yourPlaylists')}</div>
       )}
 
       <div className="sidebar-playlists">
         {!collapsed && userPlaylists.length === 0 && (
-          <div className="sidebar-empty">还没有歌单，点击上方创建</div>
+          <div className="sidebar-empty">{t('sidebar.emptyHint')}</div>
         )}
         {userPlaylists.map(pl => (
           <button

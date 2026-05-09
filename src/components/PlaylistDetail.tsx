@@ -1,6 +1,7 @@
 import React, { useState, useRef } from 'react';
 import { Playlist, Song } from '../types';
 import { usePlayer, LIKED_PLAYLIST_ID } from '../context/PlayerContext';
+import { useI18n } from '../i18n/I18nContext';
 import { gradientColors } from '../data';
 
 interface PlaylistDetailProps {
@@ -10,6 +11,7 @@ interface PlaylistDetailProps {
 
 export function PlaylistDetail({ playlist, onBack }: PlaylistDetailProps) {
   const { playPlaylist, playSong, removeSongFromPlaylist, deletePlaylist, renamePlaylist, userSongs, addSongsToPlaylist, updatePlaylistCover } = usePlayer();
+  const { t } = useI18n();
   const isLikedPlaylist = playlist.id === LIKED_PLAYLIST_ID;
   const [isEditing, setIsEditing] = useState(false);
   const [editName, setEditName] = useState(playlist.name);
@@ -20,7 +22,7 @@ export function PlaylistDetail({ playlist, onBack }: PlaylistDetailProps) {
   function formatDuration(seconds: number): string {
     const h = Math.floor(seconds / 3600);
     const m = Math.floor((seconds % 3600) / 60);
-    return h > 0 ? `${h} 小时 ${m} 分钟` : `${m} 分钟`;
+    return h > 0 ? t('common.durationHours', { hours: h, minutes: m }) : t('common.durationMinutes', { minutes: m });
   }
 
   const totalDuration = playlist.songs.reduce((acc, s) => acc + s.duration, 0);
@@ -73,7 +75,7 @@ export function PlaylistDetail({ playlist, onBack }: PlaylistDetailProps) {
         <button
           className="playlist-cover-edit-btn"
           onClick={() => setShowCoverEditor(!showCoverEditor)}
-          title="更换封面"
+          title={t('playlist.changeCover')}
         >
           <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
             <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4h2v4h14v-4h2zM7 9l3-4 3 4h2l-4-5-4 5h2zm10-1V3h-2v5h-3l4 5 4-5h-3z"/>
@@ -83,16 +85,16 @@ export function PlaylistDetail({ playlist, onBack }: PlaylistDetailProps) {
         {showCoverEditor && (
           <div className="playlist-cover-editor" onClick={e => e.stopPropagation()}>
             <div className="playlist-cover-editor-section">
-              <p className="playlist-cover-editor-label">上传图片</p>
+              <p className="playlist-cover-editor-label">{t('playlist.uploadImage')}</p>
               <button className="cover-upload-btn" onClick={() => fileInputRef.current?.click()}>
                 <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor">
                   <path d="M19 10a1 1 0 01 1 1v6a3 3 0 01-3 3H7a3 3 0 01-3-3v-6a1 1 0 012 0v6a1 1 0 001 1h10a1 1 0 001-1v-6a1 1 0 011-1zm-7-7a1 1 0 01.707.293l4 4a1 1 0 01-1.414 1.414L13 6.414V15a1 1 0 11-2 0V6.414L8.707 8.707a1 1 0 01-1.414-1.414l4-4A1 1 0 0112 3z"/>
                 </svg>
-                选择图片
+                {t('playlist.selectImage')}
               </button>
             </div>
             <div className="playlist-cover-editor-section">
-              <p className="playlist-cover-editor-label">或选渐变色</p>
+              <p className="playlist-cover-editor-label">{t('playlist.orGradient')}</p>
               <div className="color-picker">
                 {gradientColors.map((c, i) => (
                   <button
@@ -116,7 +118,7 @@ export function PlaylistDetail({ playlist, onBack }: PlaylistDetailProps) {
           style={{ display: 'none' }}
         />
         <div className="playlist-detail-info">
-          <span className="playlist-detail-label">歌单</span>
+          <span className="playlist-detail-label">{t('playlist.label')}</span>
           {isEditing && !isLikedPlaylist ? (
             <div className="playlist-rename">
               <input
@@ -126,8 +128,8 @@ export function PlaylistDetail({ playlist, onBack }: PlaylistDetailProps) {
                 onKeyDown={e => { if (e.key === 'Enter') handleRename(); if (e.key === 'Escape') setIsEditing(false); }}
                 autoFocus
               />
-              <button onClick={handleRename}>保存</button>
-              <button onClick={() => setIsEditing(false)}>取消</button>
+              <button onClick={handleRename}>{t('playlist.save')}</button>
+              <button onClick={() => setIsEditing(false)}>{t('playlist.cancel')}</button>
             </div>
           ) : (
             <h1 className="playlist-detail-title" onClick={() => { if (!isLikedPlaylist) { setEditName(playlist.name); setIsEditing(true); } }}>
@@ -136,7 +138,7 @@ export function PlaylistDetail({ playlist, onBack }: PlaylistDetailProps) {
           )}
           <p className="playlist-detail-desc">{playlist.description}</p>
           <p className="playlist-detail-meta">
-            {playlist.songs.length} 首歌曲 · 约 {formatDuration(totalDuration)}
+            {t('common.songCount', { count: playlist.songs.length })} · {t('common.durationApprox')} {formatDuration(totalDuration)}
             {playlist.creator && <> · {playlist.creator}</>}
           </p>
         </div>
@@ -153,7 +155,7 @@ export function PlaylistDetail({ playlist, onBack }: PlaylistDetailProps) {
             <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
               <path d="M12 3a1 1 0 011 1v7h7a1 1 0 110 2h-7v7a1 1 0 11-2 0v-7H4a1 1 0 110-2h7V4a1 1 0 011-1z"/>
             </svg>
-            添加歌曲
+            {t('playlist.addSongs')}
           </button>
         )}
         {!isLikedPlaylist && (
@@ -161,14 +163,14 @@ export function PlaylistDetail({ playlist, onBack }: PlaylistDetailProps) {
             <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
               <path d="M3 6h18v2H3V6zm2 2h14l-1 13H6L5 8zm4-4h6l1-1H8l1 1z"/>
             </svg>
-            删除歌单
+            {t('playlist.deletePlaylist')}
           </button>
         )}
       </div>
 
       {showAddSongs && availableSongs.length > 0 && (
         <div className="add-songs-panel">
-          <h3>从音乐库添加歌曲</h3>
+          <h3>{t('playlist.addFromLibrary')}</h3>
           <div className="add-songs-list">
             {availableSongs.map(song => (
               <div key={song.id} className="track-row" onClick={() => handleAddSong(song)}>
@@ -196,15 +198,15 @@ export function PlaylistDetail({ playlist, onBack }: PlaylistDetailProps) {
         <div className="track-list">
           <div className="track-list-header">
             <span className="track-col-num">#</span>
-            <span className="track-col-title">标题</span>
-            <span className="track-col-artist">艺术家</span>
-            <span className="track-col-album">专辑</span>
-            <span className="track-col-duration">时长</span>
-            <span className="track-col-action">操作</span>
+            <span className="track-col-title">{t('library.headerTitle')}</span>
+            <span className="track-col-artist">{t('library.headerArtist')}</span>
+            <span className="track-col-album">{t('library.headerAlbum')}</span>
+            <span className="track-col-duration">{t('library.headerDuration')}</span>
+            <span className="track-col-action">{t('library.headerAction')}</span>
           </div>
           <div className="track-list-body">
             {playlist.songs.length === 0 ? (
-              <div className="track-list-empty">歌单暂无歌曲</div>
+              <div className="track-list-empty">{t('playlist.empty')}</div>
             ) : (
               playlist.songs.map((song, idx) => (
                 <div key={song.id} className="track-row" onClick={() => playPlaylist(playlist, idx)}>
@@ -222,7 +224,7 @@ export function PlaylistDetail({ playlist, onBack }: PlaylistDetailProps) {
                     <button
                       className="row-action-btn"
                       onClick={(e) => { e.stopPropagation(); removeSongFromPlaylist(playlist.id, song.id); }}
-                      title="从歌单移除"
+                      title={t('playlist.removeFromPlaylist')}
                     >
                       <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
                         <path d="M18 6L6 18M6 6l12 12" stroke="currentColor" strokeWidth="2" fill="none"/>

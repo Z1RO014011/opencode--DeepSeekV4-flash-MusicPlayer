@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Playlist, Song } from '../types';
 import { usePlayer } from '../context/PlayerContext';
+import { useI18n } from '../i18n/I18nContext';
 import { CreatePlaylistModal } from './CreatePlaylistModal';
 
 interface LibraryViewProps {
@@ -9,19 +10,20 @@ interface LibraryViewProps {
 
 export function LibraryView({ onSelectPlaylist }: LibraryViewProps) {
   const { userSongs, userPlaylists, playPlaylist, playSong, deleteSong, createPlaylist } = usePlayer();
+  const { t } = useI18n();
   const [tab, setTab] = useState<'songs' | 'playlists'>('playlists');
   const [showModal, setShowModal] = useState(false);
 
   return (
     <div className="library-view">
       <div className="library-header">
-        <h1 className="library-title">音乐库</h1>
+        <h1 className="library-title">{t('library.title')}</h1>
         <div className="library-tabs">
           <button className={`library-tab ${tab === 'playlists' ? 'active' : ''}`} onClick={() => setTab('playlists')}>
-            歌单 ({userPlaylists.length})
+            {t('library.tabPlaylists', { count: userPlaylists.length })}
           </button>
           <button className={`library-tab ${tab === 'songs' ? 'active' : ''}`} onClick={() => setTab('songs')}>
-            歌曲 ({userSongs.length})
+            {t('library.tabSongs', { count: userSongs.length })}
           </button>
         </div>
       </div>
@@ -32,12 +34,12 @@ export function LibraryView({ onSelectPlaylist }: LibraryViewProps) {
             <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor">
               <path d="M12 3a1 1 0 011 1v7h7a1 1 0 110 2h-7v7a1 1 0 11-2 0v-7H4a1 1 0 110-2h7V4a1 1 0 011-1z"/>
             </svg>
-            <span>新建歌单</span>
+            <span>{t('library.newPlaylist')}</span>
           </button>
 
           {userPlaylists.length === 0 && (
             <div className="library-empty">
-              <p>还没有歌单，点击上方按钮创建一个</p>
+              <p>{t('library.emptyPlaylists')}</p>
             </div>
           )}
 
@@ -55,7 +57,7 @@ export function LibraryView({ onSelectPlaylist }: LibraryViewProps) {
                 </div>
                 <div className="playlist-card-info">
                   <h3 className="playlist-card-title">{pl.name}</h3>
-                  <p className="playlist-card-desc">{pl.songs.length} 首歌曲{pl.creator ? ` · ${pl.creator}` : ''}</p>
+                  <p className="playlist-card-desc">{t('common.songCount', { count: pl.songs.length })}{pl.creator ? ` · ${pl.creator}` : ''}</p>
                 </div>
               </div>
             ))}
@@ -77,17 +79,17 @@ export function LibraryView({ onSelectPlaylist }: LibraryViewProps) {
         <div className="library-songs">
           {userSongs.length === 0 ? (
             <div className="library-empty">
-              <p>还没有导入歌曲，点击左侧「导入音乐」添加</p>
+              <p>{t('library.emptySongs')}</p>
             </div>
           ) : (
             <div className="track-list">
               <div className="track-list-header">
                 <span className="track-col-num">#</span>
-                <span className="track-col-title">标题</span>
-                <span className="track-col-artist">艺术家</span>
-                <span className="track-col-album">专辑</span>
-                <span className="track-col-duration">时长</span>
-                <span className="track-col-action">操作</span>
+                <span className="track-col-title">{t('library.headerTitle')}</span>
+                <span className="track-col-artist">{t('library.headerArtist')}</span>
+                <span className="track-col-album">{t('library.headerAlbum')}</span>
+                <span className="track-col-duration">{t('library.headerDuration')}</span>
+                <span className="track-col-action">{t('library.headerAction')}</span>
               </div>
               <div className="track-list-body">
                   {userSongs.map((song, idx) => (
@@ -106,7 +108,7 @@ export function LibraryView({ onSelectPlaylist }: LibraryViewProps) {
                       <button
                         className="row-action-btn"
                         onClick={(e) => { e.stopPropagation(); deleteSong(song.id); }}
-                        title="删除"
+                        title={t('action.delete')}
                       >
                         <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
                           <path d="M3 6h18v2H3V6zm2 2h14l-1 13H6L5 8zm4-4h6l1-1H8l1 1z"/>

@@ -1,6 +1,7 @@
 import React from 'react';
 import { Playlist } from '../types';
 import { usePlayer } from '../context/PlayerContext';
+import { useI18n } from '../i18n/I18nContext';
 
 interface HomeViewProps {
   onSelectPlaylist: (playlist: Playlist) => void;
@@ -8,6 +9,7 @@ interface HomeViewProps {
 
 export function HomeView({ onSelectPlaylist }: HomeViewProps) {
   const { userSongs, userPlaylists, playPlaylist, playSong } = usePlayer();
+  const { t } = useI18n();
 
   const hasContent = userSongs.length > 0 || userPlaylists.length > 0;
   const recentSongs = userSongs.slice(-8).reverse();
@@ -18,7 +20,7 @@ export function HomeView({ onSelectPlaylist }: HomeViewProps) {
       <section className="hero-section">
         <div className="hero-content">
           <h1 className="hero-title">Your music, your way</h1>
-          <p className="hero-subtitle">导入本地音乐，创建专属歌单</p>
+          <p className="hero-subtitle">{t('default.importHero')}</p>
         </div>
       </section>
 
@@ -27,7 +29,7 @@ export function HomeView({ onSelectPlaylist }: HomeViewProps) {
           {userPlaylists.length > 0 && (
             <section className="home-section">
               <div className="section-header">
-                <h2 className="section-title">你的歌单</h2>
+                <h2 className="section-title">{t('home.yourPlaylists')}</h2>
               </div>
               <div className="playlist-grid">
                 {userPlaylists.map(pl => (
@@ -43,7 +45,7 @@ export function HomeView({ onSelectPlaylist }: HomeViewProps) {
                     </div>
                     <div className="playlist-card-info">
                       <h3 className="playlist-card-title">{pl.name}</h3>
-                      <p className="playlist-card-desc">{pl.songs.length} 首歌曲</p>
+                      <p className="playlist-card-desc">{t('common.songCount', { count: pl.songs.length })}</p>
                     </div>
                   </div>
                 ))}
@@ -54,7 +56,7 @@ export function HomeView({ onSelectPlaylist }: HomeViewProps) {
           {recentSongs.length > 0 && (
             <section className="home-section">
               <div className="section-header">
-                <h2 className="section-title">最近导入</h2>
+                <h2 className="section-title">{t('home.recentlyImported')}</h2>
               </div>
               <div className="track-list">
                 <div className="track-list-body">
@@ -85,9 +87,9 @@ export function HomeView({ onSelectPlaylist }: HomeViewProps) {
                 <path d="M12 3a1 1 0 011 1v7h7a1 1 0 110 2h-7v7a1 1 0 11-2 0v-7H4a1 1 0 110-2h7V4a1 1 0 011-1z"/>
               </svg>
             </div>
-            <h3 className="empty-title">导入你的音乐</h3>
-            <p className="empty-desc">点击左侧「导入音乐」开始添加本地歌曲</p>
-            <p className="empty-desc">然后创建歌单整理你的收藏</p>
+            <h3 className="empty-title">{t('home.emptyTitle')}</h3>
+            <p className="empty-desc">{t('home.emptyDesc1')}</p>
+            <p className="empty-desc">{t('home.emptyDesc2')}</p>
           </div>
         </section>
       )}

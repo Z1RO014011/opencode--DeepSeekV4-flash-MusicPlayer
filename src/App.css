@@ -2323,6 +2323,57 @@
   color: rgba(255, 255, 255, 0.8);
 }
 
+/* ============ SETTINGS VIEW ============ */
+
+.settings-view {
+  padding: 24px 32px;
+}
+
+.settings-title {
+  font-size: 32px;
+  font-weight: 700;
+  margin-bottom: 32px;
+}
+
+.settings-section {
+  margin-bottom: 32px;
+}
+
+.settings-section-label {
+  font-size: 13px;
+  font-weight: 600;
+  color: rgba(255,255,255,0.5);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin-bottom: 12px;
+}
+
+.settings-options {
+  display: flex;
+  gap: 8px;
+}
+
+.settings-option {
+  padding: 10px 24px;
+  border-radius: 20px;
+  border: none;
+  font-size: 14px;
+  font-weight: 500;
+  background: rgba(255,255,255,0.08);
+  color: #fff;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.settings-option:hover {
+  background: rgba(255,255,255,0.14);
+}
+
+.settings-option.active {
+  background: #fff;
+  color: #000;
+}
+
 /* ============ SHARE ============ */
 
 .nowplaying-share-btn {

@@ -1,4 +1,5 @@
 import React, { useState, useRef } from 'react';
+import { useI18n } from '../i18n/I18nContext';
 import { gradientColors } from '../data';
 
 interface CreatePlaylistModalProps {
@@ -7,6 +8,7 @@ interface CreatePlaylistModalProps {
 }
 
 export function CreatePlaylistModal({ onClose, onCreate }: CreatePlaylistModalProps) {
+  const { t } = useI18n();
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
   const [creator, setCreator] = useState('');
@@ -39,7 +41,7 @@ export function CreatePlaylistModal({ onClose, onCreate }: CreatePlaylistModalPr
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (!name.trim()) {
-      setErrors({ name: '请输入歌单名称' });
+      setErrors({ name: t('modal.nameRequired') });
       return;
     }
     const finalCover = useImage && coverImage
@@ -48,7 +50,7 @@ export function CreatePlaylistModal({ onClose, onCreate }: CreatePlaylistModalPr
     onCreate({
       name: name.trim(),
       description: description.trim(),
-      creator: creator.trim() || '未知用户',
+      creator: creator.trim() || t('default.unknownUser'),
       coverColor: finalCover,
     });
   }
@@ -57,7 +59,7 @@ export function CreatePlaylistModal({ onClose, onCreate }: CreatePlaylistModalPr
     <div className="modal-overlay" onClick={onClose}>
       <div className="modal-content" onClick={e => e.stopPropagation()}>
         <div className="modal-header">
-          <h2 className="modal-title">创建歌单</h2>
+          <h2 className="modal-title">{t('modal.createPlaylist')}</h2>
           <button className="modal-close" onClick={onClose}>
             <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
               <path d="M3.293 3.293a1 1 0 011.414 0L12 10.586l7.293-7.293a1 1 0 111.414 1.414L13.414 12l7.293 7.293a1 1 0 01-1.414 1.414L12 13.414l-7.293 7.293a1 1 0 01-1.414-1.414L10.586 12 3.293 4.707a1 1 0 010-1.414z"/>
@@ -91,16 +93,16 @@ export function CreatePlaylistModal({ onClose, onCreate }: CreatePlaylistModalPr
                 <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
                   <path d="M19 10a1 1 0 01 1 1v6a3 3 0 01-3 3H7a3 3 0 01-3-3v-6a1 1 0 012 0v6a1 1 0 001 1h10a1 1 0 001-1v-6a1 1 0 011-1zm-7-7a1 1 0 01.707.293l4 4a1 1 0 01-1.414 1.414L13 6.414V15a1 1 0 11-2 0V6.414L8.707 8.707a1 1 0 01-1.414-1.414l4-4A1 1 0 0112 3z"/>
                 </svg>
-                上传图片
+                {t('modal.uploadImage')}
               </button>
             </div>
             <div className="modal-form-fields">
               <div className="modal-field">
-                <label className="modal-label">歌单名称 *</label>
+                <label className="modal-label">{t('modal.nameLabel')}</label>
                 <input
                   type="text"
                   className="modal-input"
-                  placeholder="例如：我的最爱"
+                  placeholder={t('modal.namePlaceholder')}
                   value={name}
                   onChange={e => { setName(e.target.value); setErrors({}); }}
                   autoFocus
@@ -108,11 +110,11 @@ export function CreatePlaylistModal({ onClose, onCreate }: CreatePlaylistModalPr
                 {errors.name && <span className="modal-error">{errors.name}</span>}
               </div>
               <div className="modal-field">
-                <label className="modal-label">创建者</label>
+                <label className="modal-label">{t('modal.creatorLabel')}</label>
                 <input
                   type="text"
                   className="modal-input"
-                  placeholder="你的名字（选填）"
+                  placeholder={t('modal.creatorPlaceholder')}
                   value={creator}
                   onChange={e => setCreator(e.target.value)}
                 />
@@ -122,7 +124,7 @@ export function CreatePlaylistModal({ onClose, onCreate }: CreatePlaylistModalPr
 
           {(!useImage || !coverImage) && (
             <div className="modal-field">
-              <label className="modal-label">封面颜色</label>
+              <label className="modal-label">{t('modal.coverColor')}</label>
               <div className="color-picker">
                 {gradientColors.map((c, i) => (
                   <button
@@ -139,7 +141,7 @@ export function CreatePlaylistModal({ onClose, onCreate }: CreatePlaylistModalPr
 
           {useImage && coverImage && (
             <div className="modal-field">
-              <label className="modal-label">封面颜色（未使用图片时的备用颜色）</label>
+              <label className="modal-label">{t('modal.fallbackColor')}</label>
               <div className="color-picker">
                 {gradientColors.slice(0, 5).map((c, i) => (
                   <button
@@ -155,10 +157,10 @@ export function CreatePlaylistModal({ onClose, onCreate }: CreatePlaylistModalPr
           )}
 
           <div className="modal-field">
-            <label className="modal-label">简介</label>
+            <label className="modal-label">{t('modal.descriptionLabel')}</label>
             <textarea
               className="modal-textarea"
-              placeholder="描述你的歌单（选填）"
+              placeholder={t('modal.descriptionPlaceholder')}
               value={description}
               onChange={e => setDescription(e.target.value)}
               rows={3}
@@ -167,10 +169,10 @@ export function CreatePlaylistModal({ onClose, onCreate }: CreatePlaylistModalPr
 
           <div className="modal-actions">
             <button type="button" className="modal-btn-secondary" onClick={onClose}>
-              取消
+              {t('action.cancel')}
             </button>
             <button type="submit" className="modal-btn-primary">
-              创建歌单
+              {t('modal.createPlaylist')}
             </button>
           </div>
         </form>

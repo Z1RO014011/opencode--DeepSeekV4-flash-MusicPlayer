@@ -1,5 +1,6 @@
 import React, { useRef, useCallback, useMemo, useState, useEffect } from 'react';
 import { usePlayer } from '../context/PlayerContext';
+import { useI18n } from '../i18n/I18nContext';
 import { LyricsView } from './LyricsView';
 import { generateShareCard } from '../lib/share';
 
@@ -9,6 +10,7 @@ interface NowPlayingViewProps {
 
 export function NowPlayingView({ onBack }: NowPlayingViewProps) {
   const { state, dispatch, togglePlay, nextTrack, prevTrack, audioRef, isLiked, toggleLike, updateSongLyrics } = usePlayer();
+  const { t } = useI18n();
   const { currentSong, isPlaying, currentTime, duration, volume, isShuffled, repeatMode } = state;
   const progressRef = useRef<HTMLDivElement>(null);
   const volumeRef = useRef<HTMLDivElement>(null);
@@ -136,7 +138,7 @@ export function NowPlayingView({ onBack }: NowPlayingViewProps) {
     return (
       <div className="nowplaying-view" style={{ background: '#121212' }}>
         <div className="nowplaying-view-inner">
-          <p className="nowplaying-none">未选择歌曲</p>
+          <p className="nowplaying-none">{t('np.noSong')}</p>
         </div>
       </div>
     );
@@ -164,7 +166,7 @@ export function NowPlayingView({ onBack }: NowPlayingViewProps) {
         /* ── LYRICS MODE: split layout ── */
         <div className="np-lyrics-mode-layout">
           <div className="np-lyrics-left">
-            <div className="nowplaying-view-cover" onClick={() => setShowLyrics(false)} title="点击返回">
+            <div className="nowplaying-view-cover" onClick={() => setShowLyrics(false)} title={t('np.clickToReturn')}>
               <div
                 className="nowplaying-view-cover-art"
                 style={{
@@ -176,10 +178,10 @@ export function NowPlayingView({ onBack }: NowPlayingViewProps) {
                 }}
               />
               <div className="nowplaying-view-cover-ring" />
-              <div className="np-lyrics-cover-hint">点击返回</div>
+              <div className="np-lyrics-cover-hint">{t('np.clickToReturn')}</div>
             </div>
 
-            <div className="np-lyrics-info" onClick={() => setShowLyrics(false)} style={{ cursor: 'pointer' }} title="点击返回">
+            <div className="np-lyrics-info" onClick={() => setShowLyrics(false)} style={{ cursor: 'pointer' }} title={t('np.clickToReturn')}>
               <div className="np-lyrics-title">{currentSong.title}</div>
               <div className="np-lyrics-artist">{currentSong.artist}</div>
             </div>
@@ -202,7 +204,7 @@ export function NowPlayingView({ onBack }: NowPlayingViewProps) {
                 <button
                   className={`nowplaying-view-btn${isShuffled ? ' active' : ''}`}
                   onClick={() => dispatch({ type: 'TOGGLE_SHUFFLE' })}
-                  title="随机播放"
+                  title={t('player.shuffle')}
                 >
                   <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                     <path d="m18 14 4 4-4 4" />
@@ -212,12 +214,12 @@ export function NowPlayingView({ onBack }: NowPlayingViewProps) {
                     <path d="M22 18h-6.041a4 4 0 0 1-3.3-1.8l-.359-.45" />
                   </svg>
                 </button>
-                <button className="nowplaying-view-btn" onClick={prevTrack} title="上一首">
+                <button className="nowplaying-view-btn" onClick={prevTrack} title={t('player.previous')}>
                   <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor">
                     <path d="M6 4h2v16H6V4zm12.49-.323l-12 8.485a1 1 0 000 1.676l12 8.485A1 1 0 0022 21.485V2.515a1 1 0 00-1.51-.838z"/>
                   </svg>
                 </button>
-                <button className="nowplaying-view-play" onClick={togglePlay} title={isPlaying ? '暂停' : '播放'}>
+                <button className="nowplaying-view-play" onClick={togglePlay} title={isPlaying ? t('action.pause') : t('action.play')}>
                   {isPlaying ? (
                     <svg viewBox="0 0 24 24" width="28" height="28" fill="currentColor">
                       <path d="M5.7 3a.7.7 0 00-.7.7v16.6a.7.7 0 00.7.7h2.6a.7.7 0 00.7-.7V3.7a.7.7 0 00-.7-.7H5.7zm8 0a.7.7 0 00-.7.7v16.6a.7.7 0 00.7.7h2.6a.7.7 0 00.7-.7V3.7a.7.7 0 00-.7-.7h-2.6z"/>
@@ -228,7 +230,7 @@ export function NowPlayingView({ onBack }: NowPlayingViewProps) {
                     </svg>
                   )}
                 </button>
-                <button className="nowplaying-view-btn" onClick={nextTrack} title="下一首">
+                <button className="nowplaying-view-btn" onClick={nextTrack} title={t('player.next')}>
                   <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor">
                     <path d="M5.51 2.323l12 8.485a1 1 0 010 1.676l-12 8.485A1 1 0 014 20.485V3.515a1 1 0 011.51-.838zM18 4h2v16h-2V4z"/>
                   </svg>
@@ -236,7 +238,7 @@ export function NowPlayingView({ onBack }: NowPlayingViewProps) {
                 <button
                   className={`nowplaying-view-btn${repeatMode !== 'off' ? ' active' : ''}`}
                   onClick={() => dispatch({ type: 'CYCLE_REPEAT' })}
-                  title={`重复: ${repeatMode === 'off' ? '关闭' : repeatMode === 'all' ? '全部循环' : '单曲循环'}`}
+                  title={`${t('player.repeat')}: ${repeatMode === 'off' ? t('player.repeatOff') : repeatMode === 'all' ? t('player.repeatAll') : t('player.repeatOne')}`}
                 >
                   <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                     <path d={repeatMode === 'one'
@@ -254,7 +256,7 @@ export function NowPlayingView({ onBack }: NowPlayingViewProps) {
                 <button
                   className="nowplaying-lyrics-edit-btn"
                   onClick={() => { setEditingLyrics(true); setLrcInput(''); }}
-                  title="编辑歌词"
+                  title={t('np.editLyrics')}
                 >
                   <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
                     <path d="M16.86 3.02a1.5 1.5 0 012.12 2.12l-10.6 10.6-2.84.7.7-2.84 10.62-10.58zM4 20h16v-2H4v2z"/>
@@ -263,7 +265,7 @@ export function NowPlayingView({ onBack }: NowPlayingViewProps) {
                 <button
                   className={`nowplaying-lyrics-toggle${showLyrics ? ' active' : ''}`}
                   onClick={() => { setShowLyrics(false); setEditingLyrics(false); }}
-                  title="关闭歌词"
+                  title={t('np.closeLyrics')}
                 >
                   <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor">
                     <path d="M3 4h18v2H3V4zm0 7h12v2H3v-2zm0 7h18v2H3v-2z"/>
@@ -303,18 +305,18 @@ export function NowPlayingView({ onBack }: NowPlayingViewProps) {
               /* ── LYRICS EDITOR ── */
               <div className="nowplaying-lyrics-editor">
                 <p className="nowplaying-lyrics-editor-hint">
-                  粘贴 LRC 格式歌词（每行格式：[mm:ss.xx]歌词文本）
+                  {t('np.lrcHint')}
                 </p>
                 <textarea
                   className="nowplaying-lyrics-textarea"
                   value={lrcInput}
                   onChange={e => setLrcInput(e.target.value)}
-                  placeholder={`[00:12.50]第一句歌词\n[00:25.30]第二句歌词\n[00:42.10]第三句歌词`}
+                  placeholder={t('np.lrcPlaceholder')}
                   rows={10}
                 />
                 <div className="nowplaying-lyrics-editor-actions">
-                  <button className="nowplaying-lyrics-btn-cancel" onClick={() => setEditingLyrics(false)}>取消</button>
-                  <button className="nowplaying-lyrics-btn-save" onClick={handleSaveLyrics}>保存歌词</button>
+                  <button className="nowplaying-lyrics-btn-cancel" onClick={() => setEditingLyrics(false)}>{t('action.cancel')}</button>
+                  <button className="nowplaying-lyrics-btn-save" onClick={handleSaveLyrics}>{t('np.saveLyrics')}</button>
                 </div>
               </div>
             ) : (
@@ -325,7 +327,7 @@ export function NowPlayingView({ onBack }: NowPlayingViewProps) {
                     <button
                       className="nowplaying-lyrics-edit-btn"
                       onClick={() => { setEditingLyrics(true); setLrcInput(''); }}
-                      title="编辑歌词"
+                      title={t('np.editLyrics')}
                     >
                       <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
                         <path d="M16.86 3.02a1.5 1.5 0 012.12 2.12l-10.6 10.6-2.84.7.7-2.84 10.62-10.58zM4 20h16v-2H4v2z"/>
@@ -334,7 +336,7 @@ export function NowPlayingView({ onBack }: NowPlayingViewProps) {
                     <button
                       className={`nowplaying-lyrics-toggle${showLyrics ? ' active' : ''}`}
                       onClick={() => { setShowLyrics(!showLyrics); setEditingLyrics(false); }}
-                      title={showLyrics ? '隐藏歌词' : '显示歌词'}
+                      title={showLyrics ? t('np.hideLyrics') : t('np.showLyrics')}
                     >
                       <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor">
                         <path d="M3 4h18v2H3V4zm0 7h12v2H3v-2zm0 7h18v2H3v-2z"/>
@@ -348,7 +350,7 @@ export function NowPlayingView({ onBack }: NowPlayingViewProps) {
                     <button
                       className={`like-btn${isLiked(currentSong.id) ? ' liked' : ''}`}
                       onClick={() => toggleLike(currentSong)}
-                      title={isLiked(currentSong.id) ? '取消喜欢' : '喜欢'}
+                      title={isLiked(currentSong.id) ? t('player.unlike') : t('player.like')}
                     >
                       <svg viewBox="0 0 24 24" width="24" height="24" fill={isLiked(currentSong.id) ? 'currentColor' : 'none'} stroke="currentColor" strokeWidth="2">
                         <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
@@ -376,7 +378,7 @@ export function NowPlayingView({ onBack }: NowPlayingViewProps) {
                   <button
                     className={`nowplaying-view-btn${isShuffled ? ' active' : ''}`}
                     onClick={() => dispatch({ type: 'TOGGLE_SHUFFLE' })}
-                    title="随机播放"
+                    title={t('player.shuffle')}
                   >
                     <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                       <path d="m18 14 4 4-4 4" />
@@ -386,12 +388,12 @@ export function NowPlayingView({ onBack }: NowPlayingViewProps) {
                     <path d="M22 18h-6.041a4 4 0 0 1-3.3-1.8l-.359-.45" />
                     </svg>
                   </button>
-                  <button className="nowplaying-view-btn" onClick={prevTrack} title="上一首">
+                  <button className="nowplaying-view-btn" onClick={prevTrack} title={t('player.previous')}>
                     <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
                       <path d="M6 4h2v16H6V4zm12.49-.323l-12 8.485a1 1 0 000 1.676l12 8.485A1 1 0 0022 21.485V2.515a1 1 0 00-1.51-.838z"/>
                     </svg>
                   </button>
-                  <button className="nowplaying-view-play" onClick={togglePlay} title={isPlaying ? '暂停' : '播放'}>
+                  <button className="nowplaying-view-play" onClick={togglePlay} title={isPlaying ? t('action.pause') : t('action.play')}>
                     {isPlaying ? (
                       <svg viewBox="0 0 24 24" width="28" height="28" fill="currentColor">
                         <path d="M5.7 3a.7.7 0 00-.7.7v16.6a.7.7 0 00.7.7h2.6a.7.7 0 00.7-.7V3.7a.7.7 0 00-.7-.7H5.7zm8 0a.7.7 0 00-.7.7v16.6a.7.7 0 00.7.7h2.6a.7.7 0 00.7-.7V3.7a.7.7 0 00-.7-.7h-2.6z"/>
@@ -402,7 +404,7 @@ export function NowPlayingView({ onBack }: NowPlayingViewProps) {
                       </svg>
                     )}
                   </button>
-                  <button className="nowplaying-view-btn" onClick={nextTrack} title="下一首">
+                  <button className="nowplaying-view-btn" onClick={nextTrack} title={t('player.next')}>
                     <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
                       <path d="M5.51 2.323l12 8.485a1 1 0 010 1.676l-12 8.485A1 1 0 014 20.485V3.515a1 1 0 011.51-.838zM18 4h2v16h-2V4z"/>
                     </svg>
@@ -410,7 +412,7 @@ export function NowPlayingView({ onBack }: NowPlayingViewProps) {
                   <button
                     className={`nowplaying-view-btn${repeatMode !== 'off' ? ' active' : ''}`}
                     onClick={() => dispatch({ type: 'CYCLE_REPEAT' })}
-                    title={`重复: ${repeatMode === 'off' ? '关闭' : repeatMode === 'all' ? '全部循环' : '单曲循环'}`}
+                    title={`${t('player.repeat')}: ${repeatMode === 'off' ? t('player.repeatOff') : repeatMode === 'all' ? t('player.repeatAll') : t('player.repeatOne')}`}
                   >
                     <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                       <path d={repeatMode === 'one'
@@ -437,15 +439,15 @@ export function NowPlayingView({ onBack }: NowPlayingViewProps) {
 
                 <div className="nowplaying-view-meta">
                   <div className="np-meta-item">
-                    <span className="np-meta-label">专辑</span>
+                    <span className="np-meta-label">{t('np.album')}</span>
                     <span className="np-meta-value">{currentSong.album}</span>
                   </div>
                   <div className="np-meta-item">
-                    <span className="np-meta-label">艺术家</span>
+                    <span className="np-meta-label">{t('np.artist')}</span>
                     <span className="np-meta-value">{currentSong.artist}</span>
                   </div>
                   <div className="np-meta-item">
-                    <span className="np-meta-label">时长</span>
+                    <span className="np-meta-label">{t('np.duration')}</span>
                     <span className="np-meta-value">{formatTime(currentSong.duration)}</span>
                   </div>
                 </div>
@@ -455,14 +457,14 @@ export function NowPlayingView({ onBack }: NowPlayingViewProps) {
                     <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor">
                       <path d="M3 4h18v2H3V4zm0 7h12v2H3v-2zm0 7h18v2H3v-2z"/>
                     </svg>
-                    添加歌词
+                    {t('np.addLyrics')}
                   </button>
                 )}
-                <button className="nowplaying-share-btn" onClick={handleShare} title="分享歌曲">
+                <button className="nowplaying-share-btn" onClick={handleShare} title={t('np.shareSong')}>
                   <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
                     <path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92s2.92-1.31 2.92-2.92-1.31-2.92-2.92-2.92z"/>
                   </svg>
-                  分享
+                  {t('np.share')}
                 </button>
               </>
             )}
@@ -475,7 +477,7 @@ export function NowPlayingView({ onBack }: NowPlayingViewProps) {
         <div className="modal-overlay" onClick={() => { setShareImage(null); setSharing(false); }}>
           <div className="share-modal" onClick={e => e.stopPropagation()}>
             <div className="modal-header">
-              <h2 className="modal-title">分享卡片</h2>
+              <h2 className="modal-title">{t('np.shareCard')}</h2>
               <button className="modal-close" onClick={() => { setShareImage(null); setSharing(false); }}>
                 <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
                   <path d="M3.293 3.293a1 1 0 011.414 0L12 10.586l7.293-7.293a1 1 0 111.414 1.414L13.414 12l7.293 7.293a1 1 0 01-1.414 1.414L12 13.414l-7.293 7.293a1 1 0 01-1.414-1.414L10.586 12 3.293 4.707a1 1 0 010-1.414z"/>
@@ -483,14 +485,14 @@ export function NowPlayingView({ onBack }: NowPlayingViewProps) {
               </button>
             </div>
             <div className="share-card-preview">
-              <img src={shareImage} alt="分享卡片" />
+              <img src={shareImage} alt={t('np.shareCard')} />
             </div>
             <div className="share-modal-actions">
               <button className="share-download-btn" onClick={handleDownloadShare}>
                 <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor">
                   <path d="M19 10a1 1 0 01 1 1v6a3 3 0 01-3 3H7a3 3 0 01-3-3v-6a1 1 0 012 0v6a1 1 0 001 1h10a1 1 0 001-1v-6a1 1 0 011-1zm-7-7a1 1 0 01.707.293l4 4a1 1 0 01-1.414 1.414L13 6.414V15a1 1 0 11-2 0V6.414L8.707 8.707a1 1 0 01-1.414-1.414l4-4A1 1 0 0112 3z"/>
                 </svg>
-                下载图片
+                {t('np.downloadImage')}
               </button>
             </div>
           </div>
@@ -501,7 +503,7 @@ export function NowPlayingView({ onBack }: NowPlayingViewProps) {
         <div className="modal-overlay">
           <div className="share-loading">
             <div className="share-spinner" />
-            <p>生成分享卡片中...</p>
+            <p>{t('np.generating')}</p>
           </div>
         </div>
       )}

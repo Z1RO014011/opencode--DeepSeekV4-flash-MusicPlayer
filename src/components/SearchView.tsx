@@ -1,6 +1,7 @@
 import React, { useState, useMemo } from 'react';
 import { Playlist } from '../types';
 import { usePlayer } from '../context/PlayerContext';
+import { useI18n } from '../i18n/I18nContext';
 
 interface SearchViewProps {
   onSelectPlaylist: (playlist: Playlist) => void;
@@ -9,6 +10,7 @@ interface SearchViewProps {
 export function SearchView({ onSelectPlaylist }: SearchViewProps) {
   const [query, setQuery] = useState('');
   const { userSongs, userPlaylists, playPlaylist, playSong } = usePlayer();
+  const { t } = useI18n();
 
   const results = useMemo(() => {
     if (!query.trim()) return null;
@@ -33,7 +35,7 @@ export function SearchView({ onSelectPlaylist }: SearchViewProps) {
         </svg>
         <input
           type="text"
-          placeholder="搜索歌曲、歌单..."
+          placeholder={t('search.placeholder')}
           value={query}
           onChange={e => setQuery(e.target.value)}
           className="search-input"
@@ -52,7 +54,7 @@ export function SearchView({ onSelectPlaylist }: SearchViewProps) {
         <div className="search-results">
           {results.playlists.length > 0 && (
             <section className="search-section">
-              <h2 className="section-title">歌单</h2>
+              <h2 className="section-title">{t('search.playlists')}</h2>
               <div className="playlist-grid">
                 {results.playlists.map(pl => (
                   <div key={pl.id} className="playlist-card" onClick={() => onSelectPlaylist(pl)}>
@@ -67,7 +69,7 @@ export function SearchView({ onSelectPlaylist }: SearchViewProps) {
                     </div>
                     <div className="playlist-card-info">
                       <h3 className="playlist-card-title">{pl.name}</h3>
-                      <p className="playlist-card-desc">{pl.songs.length} 首歌曲</p>
+                      <p className="playlist-card-desc">{t('common.songCount', { count: pl.songs.length })}</p>
                     </div>
                   </div>
                 ))}
@@ -76,7 +78,7 @@ export function SearchView({ onSelectPlaylist }: SearchViewProps) {
           )}
           {results.songs.length > 0 && (
             <section className="search-section">
-              <h2 className="section-title">歌曲</h2>
+              <h2 className="section-title">{t('search.songs')}</h2>
               <div className="search-song-list">
                 {results.songs.map((song, idx) => (
                   <div key={song.id} className="track-row" onClick={() => playSong(song)}>
@@ -97,15 +99,15 @@ export function SearchView({ onSelectPlaylist }: SearchViewProps) {
           )}
           {results.songs.length === 0 && results.playlists.length === 0 && (
             <div className="search-empty">
-              <p>未找到 "{query}" 的相关结果</p>
+              <p>{t('search.noResults', { query })}</p>
             </div>
           )}
         </div>
       ) : (
         <div className="search-browse">
-          <h2 className="section-title">搜索你的音乐</h2>
-          <p className="search-hint">在上方搜索框中输入歌曲名、艺术家或专辑名</p>
-          <p className="search-hint">共 {userSongs.length} 首歌曲 · {userPlaylists.length} 个歌单</p>
+          <h2 className="section-title">{t('search.browseTitle')}</h2>
+          <p className="search-hint">{t('search.browseHint')}</p>
+          <p className="search-hint">{t('search.totalCount', { songs: userSongs.length, playlists: userPlaylists.length })}</p>
         </div>
       )}
     </div>
