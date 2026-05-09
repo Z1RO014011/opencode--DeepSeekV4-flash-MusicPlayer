@@ -159,7 +159,7 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
   const [userSongs, setUserSongs] = useState<Song[]>([]);
   const [userPlaylists, setUserPlaylists] = useState<Playlist[]>([]);
   const [loaded, setLoaded] = useState(false);
-  const { t } = useI18n();
+  const { t, language } = useI18n();
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const stateRef = useRef(state);
   const loadedRef = useRef(false);
@@ -240,8 +240,7 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
           : pl
       )
     );
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [t]);
+  }, [language, loaded, t]);
 
   useEffect(() => {
     const audio = new Audio();
