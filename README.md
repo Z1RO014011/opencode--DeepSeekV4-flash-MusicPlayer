@@ -33,11 +33,11 @@ npm run dev
 
 | 系统 | 下载 | 说明 |
 |------|------|------|
-| macOS (Apple Silicon) | [Jasmine.Music.Player-1.1.1-arm64.dmg](https://github.com/Z1RO014011/opencode--DeepSeekV4-flash-MusicPlayer/releases/download/v1.1.1/Jasmine.Music.Player-1.1.1-arm64.dmg) | DMG 安装包 |
-| macOS (Apple Silicon) | [Jasmine.Music.Player-1.1.1-arm64-mac.zip](https://github.com/Z1RO014011/opencode--DeepSeekV4-flash-MusicPlayer/releases/download/v1.1.1/Jasmine.Music.Player-1.1.1-arm64-mac.zip) | ZIP 便携版 |
-| Windows (x64) | [Jasmine.Music.Player-1.1.1-win.zip](https://github.com/Z1RO014011/opencode--DeepSeekV4-flash-MusicPlayer/releases/download/v1.1.1/Jasmine.Music.Player-1.1.1-win.zip) | ZIP 便携版 |
-| Windows (ARM64) | [Jasmine.Music.Player-1.1.1-arm64-win.zip](https://github.com/Z1RO014011/opencode--DeepSeekV4-flash-MusicPlayer/releases/download/v1.1.1/Jasmine.Music.Player-1.1.1-arm64-win.zip) | ZIP 便携版 |
-| Linux (ARM64) | [Jasmine.Music.Player-1.1.1-arm64.AppImage](https://github.com/Z1RO014011/opencode--DeepSeekV4-flash-MusicPlayer/releases/download/v1.1.1/Jasmine.Music.Player-1.1.1-arm64.AppImage) | AppImage 免安装 |
+| macOS (Apple Silicon) | [Jasmine Music Player-1.2.0-arm64.dmg](https://github.com/Z1RO014011/opencode--DeepSeekV4-flash-MusicPlayer/releases/download/v1.2.0/Jasmine%20Music%20Player-1.2.0-arm64.dmg) | DMG 安装包 |
+| macOS (Apple Silicon) | [Jasmine Music Player-1.2.0-arm64-mac.zip](https://github.com/Z1RO014011/opencode--DeepSeekV4-flash-MusicPlayer/releases/download/v1.2.0/Jasmine%20Music%20Player-1.2.0-arm64-mac.zip) | ZIP 便携版 |
+| Windows (ARM64) | [Jasmine Music Player-1.2.0-arm64-win.zip](https://github.com/Z1RO014011/opencode--DeepSeekV4-flash-MusicPlayer/releases/download/v1.2.0/Jasmine%20Music%20Player-1.2.0-arm64-win.zip) | ZIP 便携版 |
+| Linux (ARM64) | [Jasmine Music Player-1.2.0-arm64.AppImage](https://github.com/Z1RO014011/opencode--DeepSeekV4-flash-MusicPlayer/releases/download/v1.2.0/Jasmine%20Music%20Player-1.2.0-arm64.AppImage) | AppImage 免安装 |
+| Linux (ARM64) | [jasmine-music-player_1.2.0_arm64.deb](https://github.com/Z1RO014011/opencode--DeepSeekV4-flash-MusicPlayer/releases/download/v1.2.0/jasmine-music-player_1.2.0_arm64.deb) | DEB 安装包 |
 
 > 下载后直接打开即可使用，首次打开 macOS 需在 **系统设置 → 隐私与安全性** 中点"仍要打开"。
 

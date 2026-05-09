@@ -251,14 +251,19 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
       const s = stateRef.current;
       const playerAudio = audioRef.current;
       if (s.queue.length === 0) return;
-      let nextIndex = s.queueIndex + 1;
-      if (nextIndex >= s.queue.length) {
-        if (s.repeatMode === 'all') {
-          nextIndex = 0;
-        } else {
-          dispatch({ type: 'SET_PLAYING', isPlaying: false });
-          if (playerAudio) playerAudio.pause();
-          return;
+      let nextIndex: number;
+      if (s.repeatMode === 'one') {
+        nextIndex = s.queueIndex;
+      } else {
+        nextIndex = s.queueIndex + 1;
+        if (nextIndex >= s.queue.length) {
+          if (s.repeatMode === 'all') {
+            nextIndex = 0;
+          } else {
+            dispatch({ type: 'SET_PLAYING', isPlaying: false });
+            if (playerAudio) playerAudio.pause();
+            return;
+          }
         }
       }
       const nextSong = s.queue[nextIndex];
@@ -334,34 +339,36 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
     dispatch({ type: 'TOGGLE_PLAY' });
   }, []);
 
+  const switchToSong = useCallback((song: Song | undefined, audio: HTMLAudioElement | null) => {
+    if (!song || !audio) return;
+    const sameTrack = stateRef.current.currentSong?.id === song.id;
+    dispatch({ type: 'PLAY_SONG', song: song });
+    if (sameTrack) {
+      // Same track: just seek to 0, keep playing
+      audio.currentTime = 0;
+      dispatch({ type: 'SEEK', time: 0 });
+      audio.play().catch(() => {});
+      return;
+    }
+    if (song.audioUrl) {
+      audio.src = song.audioUrl;
+      audio.load();
+    }
+    audio.play().catch(() => {});
+  }, []);
+
   const nextTrack = useCallback(() => {
     const audio = audioRef.current;
     const { queue, queueIndex, repeatMode } = state;
     if (queue.length === 0) return;
-    let nextIndex: number;
+    let nextIndex = queueIndex + 1;
     if (repeatMode === 'one') {
       nextIndex = queueIndex;
-    } else {
-      nextIndex = queueIndex + 1;
-      if (nextIndex >= queue.length) {
-        nextIndex = repeatMode === 'all' ? 0 : -1;
-      }
+    } else if (nextIndex >= queue.length) {
+      nextIndex = repeatMode === 'all' ? 0 : queueIndex;
     }
-    if (nextIndex < 0) {
-      dispatch({ type: 'SET_PLAYING', isPlaying: false });
-      if (audio) audio.pause();
-      return;
-    }
-    const nextSong = queue[nextIndex];
-    dispatch({ type: 'PLAY_SONG', song: nextSong });
-    if (audio && nextSong.audioUrl) {
-      if (audio.src !== nextSong.audioUrl) {
-        audio.src = nextSong.audioUrl;
-        audio.load();
-      }
-      audio.play().catch(() => {});
-    }
-  }, [state.queue, state.queueIndex, state.repeatMode]);
+    switchToSong(queue[nextIndex], audio);
+  }, [state.queue, state.queueIndex, state.repeatMode, switchToSong]);
 
   const prevTrack = useCallback(() => {
     const audio = audioRef.current;
@@ -374,25 +381,14 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
       }
       return;
     }
-    let prevIndex: number;
+    let prevIndex = queueIndex - 1;
     if (repeatMode === 'one') {
       prevIndex = queueIndex;
-    } else {
-      prevIndex = queueIndex - 1;
-      if (prevIndex < 0) {
-        prevIndex = repeatMode === 'all' ? queue.length - 1 : 0;
-      }
+    } else if (prevIndex < 0) {
+      prevIndex = repeatMode === 'all' ? queue.length - 1 : 0;
     }
-    const prevSong = queue[prevIndex];
-    dispatch({ type: 'PLAY_SONG', song: prevSong });
-    if (audio && prevSong.audioUrl) {
-      if (audio.src !== prevSong.audioUrl) {
-        audio.src = prevSong.audioUrl;
-        audio.load();
-      }
-      audio.play().catch(() => {});
-    }
-  }, [state.queue, state.queueIndex, state.currentTime, state.repeatMode]);
+    switchToSong(queue[prevIndex], audio);
+  }, [state.queue, state.queueIndex, state.currentTime, state.repeatMode, switchToSong]);
 
   const importFiles = useCallback(async (files: FileList) => {
     const newSongs: Song[] = [];
