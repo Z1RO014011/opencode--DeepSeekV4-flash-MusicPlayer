@@ -28,21 +28,23 @@
     "mac": {
       "icon": "assets/icon.png",
       "target": [
-        "dmg",
-        "zip"
+        { "target": "dmg", "arch": ["arm64", "x64"] },
+        { "target": "zip", "arch": ["arm64", "x64"] }
       ]
     },
     "linux": {
       "icon": "assets/icon.png",
       "target": [
-        "AppImage",
-        "deb"
+        { "target": "AppImage", "arch": ["arm64", "x64"] },
+        { "target": "deb", "arch": ["arm64", "x64"] }
       ],
       "maintainer": "Z1RO014011"
     },
     "win": {
       "icon": "assets/icon.ico",
-      "target": "zip"
+      "target": [
+        { "target": "zip", "arch": ["arm64", "x64"] }
+      ]
     }
   },
   "dependencies": {
